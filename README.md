@@ -4,4 +4,4 @@
 
 -[CMake](https://cmake.org/download/)
 
--[Lemon Graph Library](http://lemon.cs.elte.hu/trac/lemon/wiki/InstallGuide)
+-[igraph](https://igraph.org/c/doc/igraph-Installation.html#igraph-Installation-installation)
