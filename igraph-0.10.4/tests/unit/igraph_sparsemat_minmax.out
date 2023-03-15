@@ -1,0 +1,32 @@
+Triplet diagonal matrix
+Compressed diagonal matrix
+Random triplet matrix
+-8 -5 3 -5 -3 7 -10 -4 -2 1 -10 -6 -10 -5 -4 -5 -6 -9 10 -8
+10 -10 -6 -4 -5 9 -10 -10 -9 -8
+Random compressed matrix
+-8 -5 3 -5 -3 7 -10 -4 -1 1 -7 -6 -10 -5 -4 -5 -6 -11 10 -8
+10 -10 -6 -4 -5 9 -7 -10 -11 -8
+Matrix with zero rows, triplet
+Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf
+Matrix with zero rows, compressed
+Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf
+Matrix with zero columns, triplet
+Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf
+Matrix with zero columns, compressed
+Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf
+Triplet diagonal matrix
+Compressed diagonal matrix
+Random triplet matrix
+8 5 -3 5 3 -7 10 4 2 -1 10 6 10 5 4 5 6 9 -10 8
+-10 10 6 4 5 -9 10 10 9 8
+Random compressed matrix
+8 5 -3 5 3 -7 10 4 1 -1 7 6 10 5 4 5 6 11 -10 8
+-10 10 6 4 5 -9 7 10 11 8
+Matrix with zero rows, triplet
+-Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf
+Matrix with zero rows, compressed
+-Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf
+Matrix with zero columns, triplet
+-Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf
+Matrix with zero columns, compressed
+-Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf

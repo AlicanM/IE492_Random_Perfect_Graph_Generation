@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  rpgg:
+    build: .
+    container_name: rpgg_c
+    volumes:
+      - .:/rpgg
+      - ./rpgg/igraph-0.10.4

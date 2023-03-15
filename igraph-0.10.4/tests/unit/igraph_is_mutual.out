@@ -1,0 +1,16 @@
+No vertices:
+
+
+Graph with loops and multiple edges, loops considered:
+0 1 1 0 1 1 0 0 0
+
+Graph with loops and multiple edges, loops not considered:
+0 1 0 0 1 1 0 0 0
+
+Same graph, selecting edge 4:
+1
+
+Same graph, but undirected:
+1 1 1 1 1 1 1 1 1
+
+Edge out of range.

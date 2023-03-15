@@ -1,0 +1,67 @@
+Unweighted case
+---------------
+
+Vertices:
+{
+  0: ( 2 1 0 )
+  1: ( )
+}
+
+Edges:
+{
+  0: ( 1 0 )
+  1: ( )
+}
+
+Parents:
+( 1 2 -1 -2 )
+
+Inbound edges:
+( 0 1 -1 -1 )
+
+Weighted case
+-------------
+
+Algorithm: Dijkstra
+
+Vertices:
+{
+  0: ( 2 1 0 )
+  1: ( )
+}
+
+Edges:
+{
+  0: ( 1 0 )
+  1: ( )
+}
+
+Parents:
+( 1 2 -1 -2 )
+
+Inbound edges:
+( 0 1 -1 -1 )
+
+Weighted case
+-------------
+
+Algorithm: Bellman-Ford
+
+Vertices:
+{
+  0: ( 2 1 0 )
+  1: ( )
+}
+
+Edges:
+{
+  0: ( 1 0 )
+  1: ( )
+}
+
+Parents:
+( 1 2 -1 -2 )
+
+Inbound edges:
+( 0 1 -1 -1 )
+
