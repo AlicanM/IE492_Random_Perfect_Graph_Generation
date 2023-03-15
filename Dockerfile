@@ -2,15 +2,15 @@ FROM danger89/cmake:4.6
 
 WORKDIR /rpgg
 
-COPY igraph-0.10.4 .
+ADD igraph-0.10.4.tar ./igraph-0.10.4
 
 WORKDIR /rpgg/igraph-0.10.4
 
-RUN mkdir igraph-0.10.4_build
+RUN mkdir build
 
-WORKDIR /rpgg/igraph-0.10.4_build
+WORKDIR /rpgg/igraph-0.10.4/build
 
-RUN cmake ../igraph-0.10.4
+RUN cmake ..
 RUN cmake --build .
 RUN cmake --install .
 

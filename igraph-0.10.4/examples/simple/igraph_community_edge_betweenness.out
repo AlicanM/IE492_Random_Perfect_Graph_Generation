@@ -1,8 +1,0 @@
-edges:
-0 1 2
-edge betweenness:
-1 1 1
-merges:
-0 1
-bridges:
-2
