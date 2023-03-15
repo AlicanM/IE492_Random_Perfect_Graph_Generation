@@ -5,4 +5,5 @@ services:
     container_name: rpgg_c
     volumes:
       - .:/rpgg
-      #- ./rpgg/igraph-0.10.4
+    #- ./rpgg/igraph-0.10.4
+    tty: true
