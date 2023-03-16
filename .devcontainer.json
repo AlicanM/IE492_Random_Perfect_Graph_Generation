@@ -1,0 +1,8 @@
+{
+  "name": "Random Perfect Graph Generation",
+  "build": {
+    "dockerfile": "./Dockerfile"
+  },
+  "workspaceFolder": "/rpgg"
+
+}
