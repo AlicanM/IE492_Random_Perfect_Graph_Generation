@@ -4,6 +4,3 @@ all: $(mckay_path).exe main.exe
 
 $(mckay_path).exe: $(mckay_path).cpp
 	gcc $(mckay_path).cpp -o $(mckay_path).exe
-
-main.exe: main.cpp
-	g++ -o main.exe main.cpp -lemon
