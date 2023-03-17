@@ -1,15 +1,11 @@
 #Igraph
 igraph-0.10.4
 
-Graph_Generation/Brendan_McKay/showg.exe
-*.exe
-
 # CMake
 build/
 
 #ShowG executable
-showg*
-Graph_Generation/Brendan_McKay/showg.exe
+showg_
 *.exe
 
 # VS code
