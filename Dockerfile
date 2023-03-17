@@ -1,19 +1,19 @@
 FROM danger89/cmake:4.6
 
-WORKDIR /rpgg
+WORKDIR /ie492_rpgg
 
 ADD igraph-0.10.4.tar.gz .
 
-WORKDIR /rpgg/igraph-0.10.4
+WORKDIR /ie492_rpgg/igraph-0.10.4
 
 RUN mkdir build
 
-WORKDIR /rpgg/igraph-0.10.4/build
+WORKDIR /ie492_rpgg/igraph-0.10.4/build
 
 RUN cmake ..
 RUN cmake --build .
 RUN cmake --install .
 
-WORKDIR /rpgg
+WORKDIR /ie492_rpgg
 
 COPY . .
