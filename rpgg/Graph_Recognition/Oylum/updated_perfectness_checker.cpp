@@ -1,37 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <igraph.h>
-
-using namespace std;
-
-class PerfectnessChecker
-{
-public:
-
-    PerfectnessChecker() {}
-    
-    bool CheckPerfectness();
-    void ReadGraph(string inputFile);
-    void ReadGraph(igraph_t *graph);
-
-private:
-    
-    bool _complementChecked = false;
-    int _numNodes;
-    vector<vector<int> > _adjList;
-    vector<vector<int> > _incMatrix;
-
-    int FindAdmissableNeighbour(const vector<bool>& labels, vector<int>& nextNeighbourIndices, int currentNode);
-    void GoUp(vector<bool>& labels, vector<int>& list, vector<int>& nextNeighbourIndices);
-    bool SearchOddHoleStartingWithGivenNode2(int startNode);
-    bool DetectOddHole3();
-    void ConvertToComplement();
-    
-};
-
-
+#include "updated_perfectness_checker.h"
 
 bool PerfectnessChecker::CheckPerfectness()
 {
@@ -43,16 +10,16 @@ bool PerfectnessChecker::CheckPerfectness()
             bool oddHoleInComplement = DetectOddHole3();
             _complementChecked = true;
             if (oddHoleInComplement) {
-                cout << "This graph is not perfect because there is an odd hole in its complement!!" << endl;
+                // This graph is not perfect because there is an odd hole in its complement!
                 return false;
             }
             else {
-                cout << "This graph is perfect!!" << endl;
+                // This graph is perfect!!
                 return true;
             }
         }
     else {
-        cout << "This graph is not perfect because there is an odd hole in it!!" << endl;
+        // This graph is not perfect because there is an odd hole in it!
         return false;
     }
 }
@@ -74,15 +41,7 @@ void PerfectnessChecker::ReadGraph(string inputFile)
             _incMatrix.at(i).at(a) = 1;
         }
     }
-    /*for (int i = 0; i < _adjList.size(); ++i){
-        cout << _adjList.at(i).size() << " ";
-        for (int j = 0; j < _adjList.at(i).size(); ++j){
-            cout << _adjList.at(i).at(j) << " ";
-        }
-        cout << endl;
-    }*/
 }
-
 void PerfectnessChecker::ReadGraph(igraph_t *graph){
     _numNodes = igraph_vcount(graph);
 
@@ -108,8 +67,6 @@ void PerfectnessChecker::ReadGraph(igraph_t *graph){
     }
     igraph_vector_int_destroy(&neighbors);
 }
-
-
 
 int PerfectnessChecker::FindAdmissableNeighbour(const vector<bool>& labels, vector<int>& nextNeighbourIndices, int currentNode)
 {//returns the ID of the neighbour if any, -1 otherwise
@@ -154,7 +111,7 @@ bool PerfectnessChecker::SearchOddHoleStartingWithGivenNode2(int startNode)
             while (i > 0 && !chord) { // while the size of the list is at least 4 and there is no chord
                 if (_incMatrix.at(list.at(i)).at(list.back()) > 0.5) { //if ith and last node in the list are connected to each other
                     if ((list.size() - 1 - i) > 3.5 && (list.size() - 1 - i) % 2 < 0.1) { //then this is already an odd hole
-                        cout << "ODD HOLE found!!!!!" << endl;
+                        // ODD HOLE found! 
                         return true;
                     }
                     else {
@@ -167,7 +124,7 @@ bool PerfectnessChecker::SearchOddHoleStartingWithGivenNode2(int startNode)
                 if (!chord)    {
                     if (_incMatrix.at(list.at(0)).at(list.back()) > 0.5) {
                         if (list.size() >= 5 && list.size() % 2 > 0.5) {
-                            cout << "ODD HOLE found!!!!!" << endl;
+                            // ODD HOLE found!
                             return true;
                         }
                         else {
@@ -190,11 +147,11 @@ bool PerfectnessChecker::DetectOddHole3()
         //we can skip the last four because even if the last four is included in an odd cycle,
         //we would need one node from the rest to complete such a hole, which would already be covered
         if (SearchOddHoleStartingWithGivenNode2(i)) {
-//            cout << "THERE IS ODD HOLE IN THIS GRAPH!!!!" << endl;
+            // THERE IS ODD HOLE IN THIS GRAPH!
             return true;
         }
     }
-    cout << "NO ODD HOLE IN THIS GRAPH!!!" << endl;
+    // NO ODD HOLE IN THIS GRAPH!
     return false;
 }
 void PerfectnessChecker::ConvertToComplement()
@@ -212,21 +169,4 @@ void PerfectnessChecker::ConvertToComplement()
             }
         }
     }
-}
-
-
-
-int main(int argc, char *argv[])
-{
-	string inputDir = "/Users/oylumseker/Desktop/pg/";
-	string inputFile = inputDir + "oddhole5.txt";
-	PerfectnessChecker p;
-    p.ReadGraph(inputFile);
-	if (p.CheckPerfectness()) {
-		cout << "This graph is perfect!" << endl;
-	}
-	else {
-		cout << "This graph is NOT perfect!" << endl;
-    }
-	cout << endl << endl;
 }
