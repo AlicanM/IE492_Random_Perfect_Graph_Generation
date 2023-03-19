@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.18)
-project(igraph_rpgg)
+project(rpgg)
 
 find_package(igraph REQUIRED)
 
-add_executable(igraph_rpgg igraph_rpgg.cpp)
-target_link_libraries(igraph_rpgg PUBLIC igraph::igraph)
+include_directories(${CMAKE_SOURCE_DIR}/Graph_Recognition/Oylum)
+
+link_directories(${CMAKE_SOURCE_DIR}/Graph_Recognition/Oylum)
+
+add_subdirectory(Graph_Recognition/Oylum)
+add_subdirectory(Speed_Tests)
+
