@@ -8,5 +8,6 @@ include_directories(${CMAKE_SOURCE_DIR}/Graph_Recognition/Oylum)
 link_directories(${CMAKE_SOURCE_DIR}/Graph_Recognition/Oylum)
 
 add_subdirectory(Graph_Recognition/Oylum)
+add_subdirectory(Graph_Generation/Marcov_Chain_C5_Free)
 add_subdirectory(Speed_Tests)
 
