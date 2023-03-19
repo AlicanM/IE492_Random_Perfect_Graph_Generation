@@ -132,7 +132,7 @@ std::string GraphConverter::igraph_to_graph6(igraph_t *graph) {
 // gets a random mckay graph in graph6 (.g6) format.
 std::string GraphConverter::getRandomMcKayGraph(int numOfVertices) {
 
-    std::ifstream input("../Generated_Perfect_Graphs/perfect" + std::to_string(numOfVertices) + ".g6");
+    std::ifstream input("../Graph_Generation/Brendan_McKay/Generated_Perfect_Graphs/perfect" + std::to_string(numOfVertices) + ".g6");
     std::string graph;
 
     int Nlength, adjListLength, stringLength, random;
