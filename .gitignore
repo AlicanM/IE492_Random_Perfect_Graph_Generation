@@ -1,11 +1,12 @@
-Graph_Generation/Brendan_McKay/showg.exe
-*.exe
+#Igraph
+igraph-0.10.4
 
 # CMake
 build/
 
 #ShowG executable
-showg*
+showg_
+*.exe
 
 # VS code
 .vscode

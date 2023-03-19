@@ -1,0 +1,14 @@
+{
+  "name": "Random Perfect Graph Generation",
+  "build": {
+    "dockerfile": "./Dockerfile"
+  },
+  "workspaceFolder": "/ie492_rpgg/rpgg",
+  "customizations":{
+    "vscode":{
+      "extensions": [
+        "ms-vscode.cpptools-extension-pack"
+      ]
+    }
+  }
+}
