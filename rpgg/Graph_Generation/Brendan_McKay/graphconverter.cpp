@@ -2,6 +2,19 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <bitset>
+#include <fstream>
+
+
+// Initialize McKay's Graphs Counts
+GraphConverter::GraphConverter(){
+    mckayGraphCount[5]  = 33;
+    mckayGraphCount[6]  = 148;
+    mckayGraphCount[7]  = 906;
+    mckayGraphCount[8]  = 8887;
+    mckayGraphCount[9]  = 136756;
+    mckayGraphCount[10] = 3269264;
+    mckayGraphCount[11] = 115811998;
+}
 
 // Parses graph6 (.g6) format, creates an igraph and assigns it to the given igraph pointer
 // Details of graph6 format can be found at: https://users.cecs.anu.edu.au/~bdm/data/formats.txt
@@ -114,4 +127,30 @@ std::string GraphConverter::igraph_to_graph6(igraph_t *graph) {
         graph6.push_back((char) (std::bitset<6>(adjListStr.substr(0 + i, 6)).to_ulong() + 63));
     }
     return graph6;
+}
+
+// gets a random mckay graph in graph6 (.g6) format.
+std::string GraphConverter::getRandomMcKayGraph(int numOfVertices) {
+
+    std::ifstream input("../Generated_Perfect_Graphs/perfect" + std::to_string(numOfVertices) + ".g6");
+    std::string graph;
+
+    int Nlength, adjListLength, stringLength, random;
+    if (0 <= numOfVertices && numOfVertices < 63)
+        Nlength = 1;
+    else if (62 < numOfVertices && numOfVertices < 258048)
+        Nlength = 4;
+    else if (258047 < numOfVertices && (long) numOfVertices < 68719476736)
+        Nlength = 8;
+
+    adjListLength = (numOfVertices * (numOfVertices-1) / 2);
+    adjListLength = ((adjListLength % 6) ? (adjListLength / 6 + 1) : (adjListLength / 6));
+    
+    stringLength = Nlength + adjListLength;
+    random = rand() % mckayGraphCount[numOfVertices];
+
+    input.seekg((stringLength + 1)*random, input.beg);
+    input >> graph;
+    input.close();
+    return graph;
 }
