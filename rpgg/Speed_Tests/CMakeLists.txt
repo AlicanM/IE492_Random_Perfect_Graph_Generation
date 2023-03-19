@@ -2,3 +2,4 @@ add_executable(recognition_test recognition_test.cpp)
 
 target_link_libraries(recognition_test PUBLIC igraph::igraph)
 target_link_libraries(recognition_test PRIVATE oylum)
+target_link_libraries(recognition_test PRIVATE graphconverter)
