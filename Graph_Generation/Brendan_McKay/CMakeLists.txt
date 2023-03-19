@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
-project(graph6_to_igraph)
+project(graphconverter)
 
 find_package(igraph REQUIRED)
 
-add_executable(graph6_to_igraph graph6_to_igraph.cpp)
-target_link_libraries(graph6_to_igraph PUBLIC igraph::igraph)
+add_executable(graphconverter graphconverter.cpp graphconverter.h main.cpp)
+target_link_libraries(graphconverter PUBLIC igraph::igraph)
