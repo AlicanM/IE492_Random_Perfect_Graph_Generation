@@ -3,6 +3,12 @@
   "build": {
     "dockerfile": "./Dockerfile"
   },
-  "workspaceFolder": "/rpgg"
-
+  "workspaceFolder": "/ie492_rpgg/rpgg",
+  "customizations":{
+    "vscode":{
+      "extensions": [
+        "ms-vscode.cpptools-extension-pack"
+      ]
+    }
+  }
 }
