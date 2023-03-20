@@ -3,7 +3,7 @@
 
 using namespace std;
 
-igraph_integer_t vertex_count = 20;
+igraph_integer_t vertex_count = 25;
 igraph_real_t density = 0.3;
 
 int main(int argc, char const *argv[])
@@ -18,9 +18,12 @@ int main(int argc, char const *argv[])
     igraph_integer_t final_edge_count = density * vertex_count*(vertex_count-1)/2;
     cout << "v-e:" << vertex_count << "\t" << final_edge_count << endl;
     while(igraph_ecount(&graph) < final_edge_count){
+cout << igraph_ecount(&graph) << endl;
         // Select two random vertices
         vertex1_id = igraph_rng_get_integer(rng, 0, vertex_count-1);
         vertex2_id = igraph_rng_get_integer(rng, 0, vertex_count-1);
+cout << vertex1_id << "\t" << vertex2_id << endl;
+
         // If vetrices are the same skip
         if(vertex1_id == vertex2_id){ continue; }
         // If edge already exists skip
@@ -95,7 +98,7 @@ int main(int argc, char const *argv[])
                     if(edge_id >= 0){ v4_count++; v5_count++; }
                     if(v4_count != 2){  continue; }
                     if(v5_count != 2){  continue; } //redundant
-
+//igraph_vector_int_print(&common_neighbours);
                     // New edge created a C5!!
                     // Remove an edge that is a part of it.
                     hasC5 = true;
@@ -103,7 +106,7 @@ int main(int argc, char const *argv[])
                 }            
             }            
         }
-
+if(hasC5){cout << "hasC5" << endl;}else{cout << "noC5" << endl;}
         // If new edge created a C5 remove it
         if(hasC5){
             igraph_es_t edge_selector;
