@@ -3,26 +3,24 @@
 
 using namespace std;
 
-igraph_integer_t vertex_count = 30;
+igraph_integer_t vertex_count = 20;
 igraph_real_t density = 0.3;
 
 int main(int argc, char const *argv[])
 {
-    igraph_integer_t final_edge_count = density * vertex_count*(vertex_count-1)/2;
-
     igraph_rng_t *rng = igraph_rng_default();
-    igraph_rng_seed(rng, 1);                            //SET SEED, REMOVE LATER
+    igraph_rng_seed(rng, time(NULL));
 
     igraph_t graph;
-    //igraph_empty(&graph, vertex_count, IGRAPH_UNDIRECTED);    
-    igraph_regular_tree(&graph, 3, 3, IGRAPH_TREE_UNDIRECTED);  /////////////////////////////////////////
-    
+    igraph_empty(&graph, vertex_count, IGRAPH_UNDIRECTED);    
+
     igraph_integer_t vertex1_id, vertex2_id, edge_id;
-    
+    igraph_integer_t final_edge_count = density * vertex_count*(vertex_count-1)/2;
+    cout << "v-e:" << vertex_count << "\t" << final_edge_count << endl;
     while(igraph_ecount(&graph) < final_edge_count){
         // Select two random vertices
-        vertex1_id = 3;//igraph_rng_get_integer(rng, 0, vertex_count-1);    /////////////////////////////////////////
-        vertex2_id = 6;//igraph_rng_get_integer(rng, 0, vertex_count-1);    /////////////////////////////////////////
+        vertex1_id = igraph_rng_get_integer(rng, 0, vertex_count-1);
+        vertex2_id = igraph_rng_get_integer(rng, 0, vertex_count-1);
         // If vetrices are the same skip
         if(vertex1_id == vertex2_id){ continue; }
         // If edge already exists skip
@@ -55,17 +53,15 @@ int main(int argc, char const *argv[])
             }
         }
 
-        igraph_vector_int_print(&common_neighbours);    /////////////////////////////////////////
         igraph_integer_t vertex3_id, vertex4_id, vertex5_id;
-        for(int i = 0; i < igraph_vector_int_size(&common_neighbours); i++){
-            for(int j = i+1; j < igraph_vector_int_size(&common_neighbours); j++){
+        igraph_bool_t hasC5 = false;
+        for(int i = 0; i < igraph_vector_int_size(&common_neighbours) && !hasC5; i++){
+            for(int j = i+1; j < igraph_vector_int_size(&common_neighbours) && !hasC5; j++){
                 for(int k = j+1; k < igraph_vector_int_size(&common_neighbours); k++){
                     // For all three element subsets of neighbours 
                     vertex3_id = igraph_vector_int_get(&common_neighbours, i);
                     vertex4_id = igraph_vector_int_get(&common_neighbours, j);
                     vertex5_id = igraph_vector_int_get(&common_neighbours, k);
-
-                    cout << "\t" << vertex1_id << "\t" << vertex2_id << "\t" << vertex3_id << "\t" << vertex4_id << "\t" << vertex5_id << endl;
 
                     // Looks at all 10 possible edges 
                     // If all 5 vertices has degree 2, then there is a C5
@@ -102,13 +98,30 @@ int main(int argc, char const *argv[])
 
                     // New edge created a C5!!
                     // Remove an edge that is a part of it.
-
-
+                    hasC5 = true;
+                    break;
                 }            
             }            
         }
-        // IF odd jump here
+
+        // If new edge created a C5 remove it
+        if(hasC5){
+            igraph_es_t edge_selector;
+            igraph_es_pairs_small(&edge_selector, IGRAPH_DIRECTED, vertex1_id, vertex2_id, -1 );
+            igraph_delete_edges(&graph, edge_selector);
+        }
     }
-        cout << igraph_ecount(&graph) << endl;
+
+    // stdout report
+    igraph_write_graph_edgelist(&graph, stdout);
+    igraph_bool_t isPerfect;
+    igraph_is_perfect(&graph, &isPerfect);
+    if(isPerfect){
+        cout << "PERFECT!!" << endl;
+    }
+    else{
+        cout << "Not Perfect" << endl;
+    }
+
     return 0;
 }
