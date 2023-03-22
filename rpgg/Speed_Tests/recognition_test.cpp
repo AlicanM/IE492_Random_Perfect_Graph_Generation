@@ -1,6 +1,6 @@
 #include <igraph.h>
 #include <iostream>
-#include <ctime>
+#include <chrono>
 #include <oylum.h>
 #include <graphconverter.h>
 
@@ -8,6 +8,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     //igraph_integer_t vertex_count[] = {200, 500, 1000, 5000};
     igraph_integer_t vertex_count[] = {20, 40, 45, 50};
     int size_vertex_count = 4;
@@ -15,7 +16,7 @@ int main(int argc, char *argv[])
     int size_density = 1;
 
     time_t timer;
-    cout << "vertex\tdensity\tigraph\toylum" << endl; 
+    cout << "vertex\tdensity\tigraph\tisPerf?\toylum\tisPerf?" << endl; 
     for(int v = 0; v < size_vertex_count; v++){
         for(int d = 0; d < size_density; d++){
             cout <<  vertex_count[v] << "\t" << density[d] << "\t";
@@ -27,18 +28,22 @@ int main(int argc, char *argv[])
             GraphConverter::graph6_to_igraph(randomMckayGraph, &graph);
 
             igraph_bool_t isPerfect;
-timer = time(NULL);
+            // Timer Begin
+            chrono::steady_clock::time_point begin = chrono::steady_clock::now();
             igraph_is_perfect(&graph, &isPerfect);
-timer = time(NULL) - timer;
-            cout << timer << "\t";
+            // Timer End
+            chrono::steady_clock::time_point end = chrono::steady_clock::now();
+            cout << chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\t" << (isPerfect ? "true" : "false") << "\t";
 
             PerfectnessChecker pChecker;
             pChecker.ReadGraph(&graph);
 
-timer = time(NULL);
+            // Timer Begin
+            begin = chrono::steady_clock::now();
 	        isPerfect = pChecker.CheckPerfectness();
-timer = time(NULL) - timer;
-            cout << timer << endl;
+            // Timer End
+            end = chrono::steady_clock::now();
+            cout << chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\t" << (isPerfect ? "true" : "false") << endl;
 
             igraph_destroy(&graph);
         }
