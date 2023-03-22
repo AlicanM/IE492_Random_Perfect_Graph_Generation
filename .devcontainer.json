@@ -13,5 +13,5 @@
   },
   "containerEnv": {
     "MCKAY_PATH": "/ie492_rpgg/rpgg/Graph_Generation/Brendan_McKay/Generated_Perfect_Graphs"
-  },
+  }
 }

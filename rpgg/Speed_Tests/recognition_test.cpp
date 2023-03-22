@@ -23,7 +23,8 @@ int main(int argc, char *argv[])
             //igraph_erdos_renyi_game(&graph, IGRAPH_ERDOS_RENYI_GNP,  vertex_count[v], density[d], IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
             //igraph_bipartite_game (&graph, nullptr, IGRAPH_ERDOS_RENYI_GNP, vertex_count[v]/2, vertex_count[v]/2, density[d], 1, IGRAPH_UNDIRECTED, IGRAPH_ALL);
             GraphConverter graph_conv;
-            GraphConverter::graph6_to_igraph(graph_conv.getRandomMcKayGraph(9), &graph);
+            string randomMckayGraph = GraphConverter::getRandomMcKayGraph(9);
+            GraphConverter::graph6_to_igraph(randomMckayGraph, &graph);
 
             igraph_bool_t isPerfect;
 timer = time(NULL);
