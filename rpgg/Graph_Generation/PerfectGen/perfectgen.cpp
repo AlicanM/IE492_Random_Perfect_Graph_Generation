@@ -17,7 +17,24 @@ void PerfectGen::disjointUnion(igraph_t *result, igraph_t *left, igraph_t *right
 }
 
 void PerfectGen::join(igraph_t *result, igraph_t *left, igraph_t *right) {
-    
+    igraph_integer_t left_vcount = igraph_vcount(left);
+    igraph_integer_t right_vcount = igraph_vcount(right);
+
+    // store the disjoint union of two graphs
+    igraph_disjoint_union(result, left, right);
+
+    // iterate over all vertices in the first graph
+    for (igraph_integer_t i = 0; i < left_vcount; i++) {
+
+        // iterate over all vertices in the second graph
+        for (igraph_integer_t j = 0; j < right_vcount; j++) {
+
+            // create a new edge between the i-th vertex in the first graph and the j-th vertex in the second graph
+            igraph_add_edge(result, i, j + left_vcount);
+        }
+    }
+
+    // the result graph now contains all vertices from both graphs connected to each other
 }
 
 void PerfectGen::complement(igraph_t *result, igraph_t *left, igraph_t *right) {
