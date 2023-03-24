@@ -16,24 +16,25 @@ void PerfectGen::substitution(igraph_t *result, const igraph_t *left, const igra
     igraph_vector_int_init(&neighbors, 0);
     igraph_neighbors(left, &neighbors, v, IGRAPH_ALL);
 
-    // Copy G1 to the result graph
-    igraph_copy(result, left);
+    // store the disjoint union of two graphs
+    igraph_disjoint_union(result, left, right);
 
     // Remove vertex v from the result graph
     igraph_delete_vertices(result, igraph_vss_1(v));
 
-    // Link each vertex in G2 to the neighbors of v in G1
-    igraph_integer_t n = igraph_vector_int_size(&neighbors);
-    igraph_integer_t m = igraph_vcount(right);
+    // Link each vertex in right graph to the neighbors of v in left graph
+    igraph_integer_t neigborCount = igraph_vector_int_size(&neighbors);
+    igraph_integer_t right_vcount = igraph_vcount(right);
+    igraph_integer_t left_vcount = igraph_vcount(left) - 1;
     igraph_vector_int_t edges;
-    igraph_vector_int_init(&edges, n * m * 2);
+    igraph_vector_int_init(&edges, neigborCount * right_vcount * 2);
 
     igraph_integer_t k = 0;
-    for (igraph_integer_t i = 0; i < m; i++) {
-        for (igraph_integer_t j = 0; j < n; j++) {
+    for (igraph_integer_t i = 0; i < right_vcount; i++) {
+        for (igraph_integer_t j = 0; j < neigborCount; j++) {
             igraph_integer_t neighbor = VECTOR(neighbors)[j];
-            VECTOR(edges)[k++] = neighbor;
-            VECTOR(edges)[k++] = igraph_vcount(result) + i;
+            VECTOR(edges)[k++] = (neighbor > v ? neighbor - 1 : neighbor);
+            VECTOR(edges)[k++] = left_vcount + i;
         }
     }
 
@@ -45,8 +46,64 @@ void PerfectGen::substitution(igraph_t *result, const igraph_t *left, const igra
     igraph_vector_int_destroy(&neighbors);
 }
 
-void PerfectGen::composition(igraph_t *result, igraph_t *left, igraph_t *right) {
-    
+// Let G1, G2 be disjoint graphs each with at least three vertices, vi be a vertex of Gi, and Ni the set of all neighbors of vi.
+// The composition of G1 and G2 is obtained from removing v1 from G1 and v2 from G2, and by connecting all vertices in N1 to those in N2.
+void PerfectGen::composition(igraph_t *result, const igraph_t *left, const igraph_t *right) {
+    // Get sizes of graphs
+    igraph_integer_t left_vcount = igraph_vcount(left);
+    igraph_integer_t right_vcount = igraph_vcount(right);
+
+    // Choose random vertices v1 in left graph and v2 in right graph
+    igraph_integer_t v1 = igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vcount(left) - 1);
+    igraph_integer_t v2 = igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vcount(right) - 1);
+
+    // store the disjoint union of two graphs
+    igraph_disjoint_union(result, left, right);
+
+    // Get the neighbors of v1 in left graph and v2 in right graph
+    igraph_vector_int_t neighbors1, neighbors2;
+    igraph_vector_int_init(&neighbors1, 0);
+    igraph_neighbors(left, &neighbors1, v1, IGRAPH_ALL);
+    igraph_vector_int_init(&neighbors2, 0);
+    igraph_neighbors(right, &neighbors2, v2, IGRAPH_ALL);
+
+    // Put v1 and v2 in a list
+    igraph_vector_int_t verticesToBeDeleted;
+    igraph_vector_int_init(&verticesToBeDeleted, 2);
+    VECTOR(verticesToBeDeleted)[0] = v1;
+    VECTOR(verticesToBeDeleted)[0] = left_vcount + v2;
+
+    // Remove vertices v1 and v2 from the result graph
+    igraph_delete_vertices(result, igraph_vss_vector(&verticesToBeDeleted));
+    left_vcount--;
+    right_vcount--;
+
+    // Free memory
+    igraph_vector_int_destroy(&verticesToBeDeleted);
+
+    igraph_vector_int_t edges;
+    igraph_integer_t neighbor1Count = igraph_vector_int_size(&neighbors1);
+    igraph_integer_t neighbor2Count = igraph_vector_int_size(&neighbors2);
+    igraph_vector_int_init(&edges, neighbor1Count * neighbor2Count * 2);
+
+    // Link vertices in N1 to vertices in N2
+    igraph_integer_t k = 0;
+    for (igraph_integer_t i = 0; i < neighbor1Count; i++) {
+        for (igraph_integer_t j = 0; j < neighbor2Count; j++) {
+            igraph_integer_t neighbor1 = VECTOR(neighbors1)[i];
+            igraph_integer_t neighbor2 = VECTOR(neighbors2)[j];
+            VECTOR(edges)[k++] = (neighbor1 > v1 ? neighbor1 - 1 : neighbor1);
+            VECTOR(edges)[k++] = left_vcount + (neighbor2 > v2 ? neighbor2 - 1 : neighbor2);
+        }
+    }
+
+    // Add all the edges
+    igraph_add_edges(result, &edges, 0);
+
+    // Free memory
+    igraph_vector_int_destroy(&edges);
+    igraph_vector_int_destroy(&neighbors1);
+    igraph_vector_int_destroy(&neighbors2);
 }
 
 void PerfectGen::disjointUnion(igraph_t *result, igraph_t *left, igraph_t *right) {

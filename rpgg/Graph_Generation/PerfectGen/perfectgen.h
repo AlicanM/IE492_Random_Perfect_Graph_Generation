@@ -8,7 +8,7 @@ class PerfectGen {
     public:
         static void cliqueIdentification(igraph_t *result, igraph_t *left, igraph_t *right);
         static void substitution(igraph_t *result, const igraph_t *left, const igraph_t *right);
-        static void composition(igraph_t *result, igraph_t *left, igraph_t *right);
+        static void composition(igraph_t *result, const igraph_t *left, const igraph_t *right);
         static void disjointUnion(igraph_t *result, igraph_t *left, igraph_t *right);
         static void join(igraph_t *result, igraph_t *left, igraph_t *right);
         static void complement(igraph_t *result, igraph_t *left, igraph_t *right);
