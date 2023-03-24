@@ -4,8 +4,45 @@ void PerfectGen::cliqueIdentification(igraph_t *result, igraph_t *left, igraph_t
 
 }
 
-void PerfectGen::substitution(igraph_t *result, igraph_t *left, igraph_t *right) {
-    
+// Let G1, G2 be disjoint graphs, v be a vertex of G1, and N the set of all neighbors of v in G1.
+// Removing v from G1 and linking each vertex in G2 to those in N results in a graph that arises from G1 and G2 by substitution.
+// If G1 and G2 are perfect, a graph G derived via substitution of the two is perfect too.
+void PerfectGen::substitution(igraph_t *result, const igraph_t *left, const igraph_t *right) {
+    // Choose a random vertex v in left graph
+    igraph_integer_t v = igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vcount(left) - 1);
+
+    // Get the neighbors of vertex v in left graph
+    igraph_vector_int_t neighbors;
+    igraph_vector_int_init(&neighbors, 0);
+    igraph_neighbors(left, &neighbors, v, IGRAPH_ALL);
+
+    // Copy G1 to the result graph
+    igraph_copy(result, left);
+
+    // Remove vertex v from the result graph
+    igraph_delete_vertices(result, igraph_vss_1(v));
+
+    // Link each vertex in G2 to the neighbors of v in G1
+    igraph_integer_t n = igraph_vector_int_size(&neighbors);
+    igraph_integer_t m = igraph_vcount(right);
+    igraph_vector_int_t edges;
+    igraph_vector_int_init(&edges, n * m * 2);
+
+    igraph_integer_t k = 0;
+    for (igraph_integer_t i = 0; i < m; i++) {
+        for (igraph_integer_t j = 0; j < n; j++) {
+            igraph_integer_t neighbor = VECTOR(neighbors)[j];
+            VECTOR(edges)[k++] = neighbor;
+            VECTOR(edges)[k++] = igraph_vcount(result) + i;
+        }
+    }
+
+    // Add all the edges
+    igraph_add_edges(result, &edges, 0);
+
+    // Free memory
+    igraph_vector_int_destroy(&edges);
+    igraph_vector_int_destroy(&neighbors);
 }
 
 void PerfectGen::composition(igraph_t *result, igraph_t *left, igraph_t *right) {
