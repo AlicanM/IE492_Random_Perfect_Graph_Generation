@@ -29,7 +29,7 @@ int generate_c5_free_graph(igraph_t *graph, igraph_integer_t vertex_count, igrap
         // Add an edge between
         igraph_add_edge(graph, vertex_ids[0], vertex_ids[1]);
 
-cout << igraph_ecount(graph) << " " << vertex_ids[0] << " " <<vertex_ids[1] << endl;
+//cout << igraph_ecount(graph) << " " << vertex_ids[0] << " " <<vertex_ids[1] << endl;
 
         // Gets all the neighbors that can be reach in at least two steps
         igraph_vector_int_list_t neighbors_list;
