@@ -1,0 +1,8 @@
+add_executable(recognition_test recognition_test.cpp)
+target_link_libraries(recognition_test PUBLIC igraph::igraph)
+target_link_libraries(recognition_test PRIVATE oylum)
+target_link_libraries(recognition_test PRIVATE graphconverter)
+
+add_executable(c5_free_generation_test c5_free_generation_test.cpp)
+target_link_libraries(c5_free_generation_test PUBLIC igraph::igraph)
+target_link_libraries(c5_free_generation_test PRIVATE c5_free_gen)
