@@ -101,12 +101,12 @@ void cousin_seperation(igraph_t *graph){
 int main(int argc, char const *argv[])
 {
     igraph_t graph;
-    generate_c5_free_graph(&graph, 35, 0.2);
+    generate_c5_free_graph(&graph, 20, 0.2);
     
     bool is_perfect;
     igraph_is_perfect(&graph, &is_perfect);
     while(!is_perfect){
-        cout << "Seperate!" << endl;
+        //cout << "Seperate!" << endl;
         cousin_seperation(&graph);
         igraph_is_perfect(&graph, &is_perfect);
     }
