@@ -54,8 +54,11 @@ void get_bfs_tree_levels(igraph_t *graph, int start_vertex, std::vector<std::vec
     }
 }
 
-
-void cousin_seperation(igraph_t *graph){
+// Follow bfs tree for a random vertex
+// If same level vertices (coisins) shares an edge, remove and adds an edge to alter the structure
+// if mode is true, seperated parent connected to the cousin
+// if mode is false, one of the cousins connected to the staring vertex
+void possible_cycle_seperation(igraph_t *graph, bool mode){
     // Get random starting vertex for bfs 
     igraph_rng_t *rng = igraph_rng_default();
     igraph_rng_seed(rng, time(NULL));
@@ -89,8 +92,16 @@ void cousin_seperation(igraph_t *graph){
                     igraph_add_edge(graph, v1_id.first, v1_id.second);
                 }
                 else{
-                    // If not connect the parent to the cousin instead
-                    igraph_add_edge(graph, v1_id.second, v2_id.first);
+                    // If possible odd cycle, connect the parent to the cousin instead
+                    if(mode){
+                        igraph_add_edge(graph, v1_id.second, v2_id.first);
+                    }
+                    else if(level%2 == 0 ){
+                        igraph_add_edge(graph, v1_id.first, start_vertex);
+                    }
+                    else{
+                        igraph_add_edge(graph, v2_id.first, start_vertex);
+                    }
                     break;
                 }
             }
@@ -98,19 +109,26 @@ void cousin_seperation(igraph_t *graph){
     }
 }
 
+
 int main(int argc, char const *argv[])
 {
     igraph_t graph;
-    generate_c5_free_graph(&graph, 35, 0.2);
+
+    time_t timer = 0;
+timer -= time(NULL);
+    generate_c5_free_graph(&graph, 20, 0.2);
     
+
     bool is_perfect;
     igraph_is_perfect(&graph, &is_perfect);
     while(!is_perfect){
         cout << "Seperate!" << endl;
-        cousin_seperation(&graph);
+        possible_cycle_seperation(&graph, false);
         igraph_is_perfect(&graph, &is_perfect);
     }
+timer += time(NULL);
+
     igraph_write_graph_edgelist(&graph, stdout);
-    cout << "Perfect!" << endl;
+    cout << "Perfect! " << timer << " seconds" << endl;
     return 0;
 }
