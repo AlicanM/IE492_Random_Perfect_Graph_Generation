@@ -4,6 +4,8 @@
 #include <igraph.h>
 #include <c5_free_gen.h>
 #include <cstdlib>
+#include <graphconverter.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -129,8 +131,14 @@ int main(int argc, char const *argv[])
     float density = atof(argv[2]);
 
     char file_name[1024];
-    char path[63] = "/ie492_rpgg/rpgg/Graph_Generation/Markov_Chain_BFS/bfs_output_";
-    sprintf(file_name, "%s%d%s%.1f%s%d%s%d%s", path, vertices, "_", density, "_", repetition, "_", mode, ".txt");
+    char path[63] = "/ie492_rpgg/rpgg/Graph_Generation/Markov_Chain_BFS/bfs_output";
+    int version = 1;
+    sprintf(file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
+    
+    while(access( file_name, F_OK ) != -1 ){
+        version++;
+        sprintf(file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
+    }
 
     FILE *outfile = fopen(file_name, "w");
     // Redirect stdout to the file
@@ -156,9 +164,9 @@ total_timer -= time(NULL);
         }
 timer = time(NULL) - timer;
 total_timer += time(NULL);
-
+  
+        cout << GraphConverter::igraph_to_graph6(&graph) << endl;
         cout << "Perfected in " << timer << " seconds" << endl;
-        //igraph_write_graph_edgelist(&graph, stdout);
     }
     cout << endl << "Total time: " << total_timer << " seconds" << endl;
     fclose(outfile);
