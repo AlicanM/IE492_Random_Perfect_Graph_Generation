@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <queue>
 #include <igraph.h>
@@ -112,6 +113,9 @@ void possible_cycle_seperation(igraph_t *graph, bool mode){
 
 int main(int argc, char const *argv[])
 {
+    string path = getenv("RPGG_PATH");
+    path += "/Graph_Generation/Marcov_Chain_BFS/bfs_output.txt";
+    FILE *outfile = fopen(path.c_str(), "w");
     igraph_t graph;
 
     time_t timer = 0;
@@ -122,13 +126,12 @@ timer -= time(NULL);
     bool is_perfect;
     igraph_is_perfect(&graph, &is_perfect);
     while(!is_perfect){
-        cout << "Seperate!" << endl;
         possible_cycle_seperation(&graph, false);
         igraph_is_perfect(&graph, &is_perfect);
     }
 timer += time(NULL);
-
-    igraph_write_graph_edgelist(&graph, stdout);
+    igraph_write_graph_edgelist(&graph, outfile);
     cout << "Perfect! " << timer << " seconds" << endl;
+    fclose(outfile);
     return 0;
 }
