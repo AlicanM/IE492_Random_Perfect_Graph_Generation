@@ -3,9 +3,10 @@
 #include <queue>
 #include <igraph.h>
 #include <c5_free_gen.h>
-#include <cstdlib>
 #include <graphconverter.h>
 #include <unistd.h>
+#include <fstream>
+
 
 using namespace std;
 
@@ -61,7 +62,7 @@ void get_bfs_tree_levels(igraph_t *graph, int start_vertex, std::vector<std::vec
 // If same level vertices (coisins) shares an edge, remove and adds an edge to alter the structure
 // if mode is false, seperated parent connected to the cousin
 // if mode is true, one of the cousins connected to the staring vertex
-void possible_cycle_seperation(igraph_t *graph, bool mode){
+void possible_oddcycle_modifications(igraph_t *graph, bool mode){
     // Get random starting vertex for bfs 
     igraph_rng_t *rng = igraph_rng_default();
     igraph_rng_seed(rng, time(NULL));
@@ -130,46 +131,62 @@ int main(int argc, char const *argv[])
     int vertices = atoi(argv[1]), repetition = atoi(argv[3]), mode = atoi(argv[4]) ;
     float density = atof(argv[2]);
 
-    char file_name[1024];
-    char path[63] = "/ie492_rpgg/rpgg/Graph_Generation/Markov_Chain_BFS/bfs_output";
+    //Filename handler for running in parallel instance
+    char res_file_name[1024], graph_file_name[1024];
+    char path[70] = "/ie492_rpgg/rpgg/Graph_Generation/Markov_Chain_BFS/outputs/bfs_output";
     int version = 1;
-    sprintf(file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
-    
-    while(access( file_name, F_OK ) != -1 ){
+    sprintf(res_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
+    sprintf(graph_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".g6");
+
+    while(access(res_file_name, F_OK ) != -1 ){
         version++;
-        sprintf(file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
+        sprintf(res_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
+        sprintf(graph_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".g6");
     }
 
-    FILE *outfile = fopen(file_name, "w");
-    // Redirect stdout to the file
-    freopen(file_name, "w", stdout);
+    ofstream out_results(res_file_name);
+    ofstream out_graphs(graph_file_name);
 
     igraph_t graph;
+    time_t total_timer = 0;    
 
-time_t total_timer = 0;    
+    out_results << "GraphNo\t\t#ofSkips\t#ofModifications\tGraphGenTime\tTimeAfterLastSkip\tTotalTime" << endl;
+    // Generate repetition number of times perfect graph
     for(int i = 1; i <= repetition; i++){
-        cout << "Graph " << i << ":" << endl;
-time_t timer = time(NULL);
-total_timer -= time(NULL);
-        generate_c5_free_graph(&graph, vertices, density);
+        int skip_counter = 0, not_perf_counter = 0;
+        time_t graph_timer = time(NULL), mc_timer = time(NULL);    
 
+        generate_c5_free_graph(&graph, vertices, density);
         bool is_perfect;
         igraph_is_perfect(&graph, &is_perfect);
+
         while(!is_perfect){
-            if(mode == 0) possible_cycle_seperation(&graph, true);
-            else if (mode == 1) possible_cycle_seperation(&graph, false);
-            else if (mode == 2) possible_cycle_seperation(&graph, i%2);
+
+            // If a graph cant be perfected in v^2 tries then generate new graph
+            not_perf_counter++;
+            if(not_perf_counter >= vertices*vertices){
+                skip_counter++;
+                not_perf_counter = 0;
+                mc_timer = time(NULL);
+                generate_c5_free_graph(&graph, vertices, density);
+            }
+
+            // Call markov chain seperation with given mode
+            if(mode == 0) possible_oddcycle_modifications(&graph, true);
+            else if (mode == 1) possible_oddcycle_modifications(&graph, false);
+            else if (mode == 2) possible_oddcycle_modifications(&graph, i%2);
 
             igraph_is_perfect(&graph, &is_perfect);
         }
-timer = time(NULL) - timer;
-total_timer += time(NULL);
-  
-        cout << GraphConverter::igraph_to_graph6(&graph) << endl;
-        cout << "Perfected in " << timer << " seconds" << endl;
+        graph_timer = time(NULL) - graph_timer;
+        mc_timer = time(NULL) - mc_timer;
+        total_timer += graph_timer;
+        out_graphs << GraphConverter::igraph_to_graph6(&graph) << endl;
+        out_results << "\t" << i << "\t\t\t" << skip_counter << "\t\t\t\t" << not_perf_counter << "\t\t\t\t" << graph_timer << " sec\t\t\t\t" << mc_timer << " sec\t\t\t" << total_timer << " sec" << endl;
     }
-    cout << endl << "Total time: " << total_timer << " seconds" << endl;
-    fclose(outfile);
+
+    out_results.close();
+    out_graphs.close();
     return 0;
 }
 

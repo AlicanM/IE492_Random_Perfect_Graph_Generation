@@ -15,3 +15,4 @@ showg_
 .DS_Store
 
 bfs_output*.txt
+bfs_output*.g6

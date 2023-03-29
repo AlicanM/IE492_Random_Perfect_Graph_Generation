@@ -1,0 +1,1 @@
+directory for generated graphs and their infos
