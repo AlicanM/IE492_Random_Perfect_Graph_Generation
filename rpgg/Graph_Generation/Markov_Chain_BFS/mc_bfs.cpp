@@ -85,6 +85,7 @@ void possible_oddcycle_modifications(igraph_t *graph, bool mode){
                 igraph_es_t edge_selector;
                 igraph_es_pairs_small(&edge_selector, IGRAPH_DIRECTED, v1_id.first, v1_id.second, -1 );
                 igraph_delete_edges(graph, edge_selector);
+                igraph_es_destroy(&edge_selector);
 
                 igraph_vector_int_t edges;
                 igraph_vector_int_init(&edges,0);
@@ -112,6 +113,7 @@ void possible_oddcycle_modifications(igraph_t *graph, bool mode){
                     igraph_add_edge(graph, v1_id.second, v2_id.first);
                     break;
                 }
+                igraph_vector_int_destroy(&edges);
             }
         }
     }
@@ -198,6 +200,7 @@ int main(int argc, char const *argv[])
         out_results << "\t" << i << "\t\t\t" << skip_counter << "\t\t\t\t" << not_perf_counter << "\t\t\t\t" << graph_timer << " sec\t\t\t\t" << mc_timer << " sec\t\t\t" << total_timer << " sec" << endl;
     }
 
+    igraph_destroy(&graph);
     out_results.close();
     out_graphs.close();
     return 0;
