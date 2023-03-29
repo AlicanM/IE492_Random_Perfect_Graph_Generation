@@ -6,7 +6,7 @@
 #include <graphconverter.h>
 #include <unistd.h>
 #include <fstream>
-
+#include <oylum.h>
 
 using namespace std;
 
@@ -184,6 +184,9 @@ int main(int argc, char const *argv[])
             else if (mode == 2) possible_oddcycle_modifications(&graph, i%2);
             cout << "Modification of Graph " << i << " ended, starting perfectness check." << endl;
 
+            //PerfectnessChecker pChecker;
+            //pChecker.ReadGraph(&graph);
+            //is_perfect = pChecker.CheckPerfectness();
             igraph_is_perfect(&graph, &is_perfect);
             cout << "Perfectness check of Graph " << i << " ended." << endl;
         }
