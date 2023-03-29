@@ -1,5 +1,6 @@
 #include <iostream>
 #include <c5_free_gen.h>
+#include <oylum.h>
 
 using namespace std;
 
@@ -38,20 +39,26 @@ int main(int argc, char const *argv[])
 {
     igraph_t graph;
 
-    generate_c5_free_graph(&graph, 40, 0.2);
-
-    igraph_write_graph_edgelist(&graph, stdout);
-    igraph_bool_t isPerfect;
-    igraph_is_perfect(&graph, &isPerfect);
-    if(isPerfect){
-        cout << "PERFECT!!" << endl;
+    int vc[] = {100};
+    float dn[] = {0.2};
+    int repeat = 1;
+    cout << "Start" << endl;
+    for(int v : vc){
+cout << v << endl;
+        for( float d : dn){
+cout << d << endl;
+            for(int i = 0; i<repeat; i++){
+                generate_c5_free_graph(&graph, v, d);
+                igraph_write_graph_edgelist(&graph, stdout);
+                PerfectnessChecker pChecker;
+                pChecker.ReadGraph(&graph);
+                cout << pChecker.CheckPerfectness() << endl;
+                if(haveC5(&graph)){
+                    cout << "C5 FOUND!!" << endl;
+                }
+            }
+        }
     }
-    else{
-        cout << "Not Perfect" << endl;
-    }
-
-    haveC5(&graph);
-
-
+    cout << "Done" << endl;
     return 0;
 }

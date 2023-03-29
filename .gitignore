@@ -13,3 +13,5 @@ showg_
 
 # MacOS
 .DS_Store
+
+bfs_output*.txt
