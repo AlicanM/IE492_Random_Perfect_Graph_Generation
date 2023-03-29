@@ -1,13 +1,14 @@
 #include <iostream>
 #include <igraph.h>
 #include <c5_free_gen.h>
+#include <chrono>
 
 using namespace std;
 
 int generate_c5_free_graph(igraph_t *graph, igraph_integer_t vertex_count, igraph_real_t density)
 {
     igraph_rng_t *rng = igraph_rng_default();
-    igraph_rng_seed(rng, time(NULL));
+    igraph_rng_seed(rng, chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count());
 
     igraph_empty(graph, vertex_count, IGRAPH_UNDIRECTED);    
 
