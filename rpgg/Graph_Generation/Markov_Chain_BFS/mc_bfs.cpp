@@ -156,28 +156,38 @@ int main(int argc, char const *argv[])
         int skip_counter = 0, not_perf_counter = 0;
         time_t graph_timer = time(NULL), mc_timer = time(NULL);    
 
+        cout << "C5 Free Generation of Graph " << i << "started." << endl;
         generate_c5_free_graph(&graph, vertices, density);
+
+        cout << "C5 Free Generation of Graph " << i << " ended, starting perfectness check." << endl;
         bool is_perfect;
         igraph_is_perfect(&graph, &is_perfect);
+        cout << "Perfectness check of Graph " << i << " ended." << endl;
 
         while(!is_perfect){
 
             // If a graph cant be perfected in v^2 tries then generate new graph
             not_perf_counter++;
             if(not_perf_counter >= vertices*vertices){
+                cout << "Regeneration C5 Free for Graph " << i << " started. not_perf_counter = " << not_perf_counter << endl;
                 skip_counter++;
                 not_perf_counter = 0;
                 mc_timer = time(NULL);
                 generate_c5_free_graph(&graph, vertices, density);
+                cout << "Regeneration C5 Free for Graph " << i << " ended." << endl;
             }
-
+                
+            cout << "Modification of Graph " << i << " started." << endl;
             // Call markov chain seperation with given mode
             if(mode == 0) possible_oddcycle_modifications(&graph, true);
             else if (mode == 1) possible_oddcycle_modifications(&graph, false);
             else if (mode == 2) possible_oddcycle_modifications(&graph, i%2);
+            cout << "Modification of Graph " << i << " ended, starting perfectness check." << endl;
 
             igraph_is_perfect(&graph, &is_perfect);
+            cout << "Perfectness check of Graph " << i << " ended." << endl;
         }
+        cout << "Graph " << i << " generated." << endl;
         graph_timer = time(NULL) - graph_timer;
         mc_timer = time(NULL) - mc_timer;
         total_timer += graph_timer;
