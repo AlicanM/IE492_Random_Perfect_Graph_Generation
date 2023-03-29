@@ -44,6 +44,7 @@ int generate_c5_free_graph(igraph_t *graph, igraph_integer_t vertex_count, igrap
         igraph_vector_int_init(&common_neighbours, 0);
         igraph_vector_int_t neighbours1 = igraph_vector_int_list_pop_back(&neighbors_list);
         igraph_vector_int_t neighbours2 = igraph_vector_int_list_pop_back(&neighbors_list);
+        igraph_vector_int_list_destroy(&neighbors_list);
         for(int i1 = 0; i1 < igraph_vector_int_size(&neighbours1); i1++){
             igraph_integer_t candidate_vector = igraph_vector_int_get(&neighbours1, i1);
             if(candidate_vector == vertex_ids[0] || candidate_vector == vertex_ids[1]){ continue;}
@@ -54,6 +55,8 @@ int generate_c5_free_graph(igraph_t *graph, igraph_integer_t vertex_count, igrap
                 }
             }
         }
+        igraph_vector_int_destroy(&neighbours1);
+        igraph_vector_int_destroy(&neighbours2);
 
         igraph_integer_t vertex3_id, vertex4_id, vertex5_id;
         bool haveC5 = false;
@@ -83,6 +86,7 @@ int generate_c5_free_graph(igraph_t *graph, igraph_integer_t vertex_count, igrap
                 }            
             }            
         }
+        igraph_vector_int_destroy(&common_neighbours);
 
         // If new edge created a C5 remove the new edge 
         // Also sometimes remove one additional edge of found C5 to prevent getting stuck in edge generation
@@ -115,6 +119,7 @@ int generate_c5_free_graph(igraph_t *graph, igraph_integer_t vertex_count, igrap
             }
 
             igraph_delete_edges(graph, edge_selector);
+            igraph_es_destroy(&edge_selector);
         }
     }
 
