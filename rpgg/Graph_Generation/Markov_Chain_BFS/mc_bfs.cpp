@@ -118,7 +118,6 @@ void possible_cycle_seperation(igraph_t *graph, bool mode){
 
 int main(int argc, char const *argv[])
 {
-<<<<<<< HEAD
     igraph_t graph;
     generate_c5_free_graph(&graph, 20, 0.2);
     
@@ -127,44 +126,6 @@ int main(int argc, char const *argv[])
     while(!is_perfect){
         //cout << "Seperate!" << endl;
         cousin_seperation(&graph);
-=======
-    if (argc < 5){
-        cout << "./mc_bfs vertices density repetition mode" << endl;
-        cout << "\tvertices as integer" << endl;
-        cout << "\tdensity as float" << endl;
-        cout << "\trepetition as integer" << endl;
-        cout << "\tmode as {0,1,2} where 0 is start vertex connection, 1 is cousin connection, 2 as hybrid" << endl;
-        return 1;
-    }
-
-    int vertices = atoi(argv[1]), repetition = atoi(argv[3]), mode = atoi(argv[4]) ;
-    float density = atof(argv[2]);
-
-    char file_name[1024];
-    char path[63] = "/ie492_rpgg/rpgg/Graph_Generation/Markov_Chain_BFS/bfs_output";
-    int version = 1;
-    sprintf(file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
-    
-    while(access( file_name, F_OK ) != -1 ){
-        version++;
-        sprintf(file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
-    }
-
-    FILE *outfile = fopen(file_name, "w");
-    // Redirect stdout to the file
-    freopen(file_name, "w", stdout);
-
-    igraph_t graph;
-
-time_t total_timer = 0;    
-    for(int i = 1; i <= repetition; i++){
-        cout << "Graph " << i << ":" << endl;
-time_t timer = time(NULL);
-total_timer -= time(NULL);
-        generate_c5_free_graph(&graph, vertices, density);
-
-        bool is_perfect;
->>>>>>> 35d614bbee9055e740d193600fe41852073f294f
         igraph_is_perfect(&graph, &is_perfect);
         while(!is_perfect){
             if(mode == 0) possible_cycle_seperation(&graph, true);
