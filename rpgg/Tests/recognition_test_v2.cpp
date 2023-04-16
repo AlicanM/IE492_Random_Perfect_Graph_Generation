@@ -3,6 +3,8 @@
 #include <fstream>
 #include <ctime>
 #include <sstream>
+#include <oylum.h>
+#include <graphconverter.h>
 
 using namespace std;
 
