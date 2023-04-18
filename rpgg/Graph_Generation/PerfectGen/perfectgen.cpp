@@ -1,6 +1,83 @@
 #include <perfectgen.h>
+#include <iostream>
 
+// Let G1, G2 be disjoint graphs, and Ki be a nonempty clique in Gi satisfying |K1| = |K2|. Define a one-to-one correspondence between vertices of K1 and K2; i.e., choose a bijective map f: K1->K2. A graph obtained by unifying each vertex v in K1 with vertex f(v) in K2 is said to arise from G1 and G2 by clique identification. A graph G obtained from two perfect graphs via clique identification is perfect.
+// We randomly select one vertex from G and one vertex from G', and extend each one to a maximal clique, say K1 and K2 . Without loss of generality, say |K1| ≤ |K2|. We randomly choose |K1| vertices from K2 and identify them with those in K1. The bijection f to identify those vertices is randomly determined.
 void PerfectGen::cliqueIdentification(igraph_t *result, igraph_t *left, igraph_t *right) {
+
+    igraph_t *graph[2] = {left, right};
+    igraph_integer_t graph_size[2], clique_size[2], v[2], *no;
+    igraph_vector_int_t cliqueSubset[2], *maximalClique[2];
+    igraph_vector_int_list_t maximalCliqueList[2];
+    *no = 1;
+
+    for (int i = 0; i < 2; i++) {
+        // Get sizes of graphs
+        graph_size[i] = igraph_vcount(graph[i]);
+
+        // Choose random vertices v1 in left graph and v2 in right graph
+        v[i] = igraph_rng_get_integer(igraph_rng_default(), 0, graph_size[i] - 1);
+
+        // Initialize clique subsets
+        igraph_vector_int_init(&cliqueSubset[i], 1);
+        VECTOR(cliqueSubset[i])[0] = v[i];
+
+        // Get maximal cliques of the vertices
+        igraph_vector_int_list_init(&maximalCliqueList[i], 0);
+        igraph_maximal_cliques_subset(graph[i], &cliqueSubset[i], &maximalCliqueList[i], no, NULL, 0, 0);
+
+        // Get a random maximal clique from the maximal clique lists
+        maximalClique[i] = igraph_vector_int_list_get_ptr(&maximalCliqueList[i],  igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vector_int_list_size(&maximalCliqueList[i]) - 1));
+
+        // Get clique sizes
+        clique_size[i] = igraph_vector_int_size(maximalClique[i]);
+    }
+    igraph_integer_t smallClique = (clique_size[0] < clique_size[1] ? 0 : 1);
+    igraph_integer_t largeClique = (clique_size[0] < clique_size[1] ? 1 : 0);
+    // 0: graph with larger clique, 1: graph with smaller clique
+
+    // random map
+    igraph_vector_int_shuffle(maximalClique[smallClique]);
+    igraph_vector_int_shuffle(maximalClique[largeClique]);
+
+    igraph_disjoint_union(result, graph[smallClique], graph[largeClique]);
+    igraph_vector_int_add_constant(maximalClique[largeClique], graph_size[smallClique]);
+
+    igraph_vector_int_t edges;
+    igraph_vector_int_init(&edges, 0);
+    igraph_integer_t k = 0;
+    for (igraph_integer_t i = 0; i < clique_size[smallClique]; i++) {
+        igraph_integer_t smallCliqueVertex = igraph_vector_int_get(maximalClique[smallClique], i);
+        igraph_integer_t largeCliqueVertex = igraph_vector_int_get(maximalClique[largeClique], i);
+        igraph_vector_int_t neighbors;
+        igraph_vector_int_init(&neighbors, 0);
+
+        igraph_neighbors(result, &neighbors, smallCliqueVertex, IGRAPH_ALL);
+        igraph_integer_t neighborCount = igraph_vector_int_size(&neighbors);
+        
+        for (igraph_integer_t j = 0; j < neighborCount; j++)  {
+            igraph_integer_t neighbor = VECTOR(neighbors)[j];
+            VECTOR(edges)[k++] = largeCliqueVertex;
+            VECTOR(edges)[k++] = neighbor;
+        }
+
+        // Free memory
+        igraph_vector_int_destroy(&neighbors);
+    }
+
+    // Add edges
+    igraph_add_edges(result, &edges, 0);
+
+    // Remove vertices that are from the small clique
+    igraph_delete_vertices(result, igraph_vss_vector(maximalClique[smallClique]));
+
+    // Free memory
+    igraph_vector_int_destroy(&edges);
+
+    for (int i = 0; i < 2; i++) {
+        igraph_vector_int_destroy(&cliqueSubset[i]);
+        igraph_vector_int_list_destroy(&maximalCliqueList[i]);
+    }
 
 }
 
@@ -23,15 +100,15 @@ void PerfectGen::substitution(igraph_t *result, const igraph_t *left, const igra
     igraph_delete_vertices(result, igraph_vss_1(v));
 
     // Link each vertex in right graph to the neighbors of v in left graph
-    igraph_integer_t neigborCount = igraph_vector_int_size(&neighbors);
+    igraph_integer_t neighborCount = igraph_vector_int_size(&neighbors);
     igraph_integer_t right_vcount = igraph_vcount(right);
     igraph_integer_t left_vcount = igraph_vcount(left) - 1;
     igraph_vector_int_t edges;
-    igraph_vector_int_init(&edges, neigborCount * right_vcount * 2);
+    igraph_vector_int_init(&edges, neighborCount * right_vcount * 2);
 
     igraph_integer_t k = 0;
     for (igraph_integer_t i = 0; i < right_vcount; i++) {
-        for (igraph_integer_t j = 0; j < neigborCount; j++) {
+        for (igraph_integer_t j = 0; j < neighborCount; j++) {
             igraph_integer_t neighbor = VECTOR(neighbors)[j];
             VECTOR(edges)[k++] = (neighbor > v ? neighbor - 1 : neighbor);
             VECTOR(edges)[k++] = left_vcount + i;
