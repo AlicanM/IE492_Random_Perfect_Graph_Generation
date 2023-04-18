@@ -208,8 +208,8 @@ void PerfectGen::join(igraph_t *result, igraph_t *left, igraph_t *right) {
     // the result graph now contains all vertices from both graphs connected to each other
 }
 
-void PerfectGen::complement(igraph_t *result, igraph_t *left, igraph_t *right) {
-    
+void PerfectGen::complement(igraph_t *result, igraph_t *graph) {
+    igraph_complementer(result, graph, false);
 }
 
 // PerfectGen algorithm explained in:
@@ -235,6 +235,6 @@ void PerfectGen::perfectGen(igraph_t *result, igraph_t *g1, igraph_t *g2) {
         PerfectGen::join(result, g1, g2);
     }
     else if (random == 5) { // Complement
-        PerfectGen::complement(result, g1, g2);
+        PerfectGen::complement(result, g1);
     }
 }
