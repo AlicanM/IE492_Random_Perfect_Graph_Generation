@@ -170,7 +170,7 @@ int main(int argc, char const *argv[])
 
             // If a graph cant be perfected in v^2 tries then generate new graph
             not_perf_counter++;
-            if(not_perf_counter >= vertices*vertices){
+            if(not_perf_counter >= vertices*vertices*vertices){
                 cout << "Regeneration C5 Free for Graph " << i << " started. not_perf_counter = " << not_perf_counter << endl;
                 skip_counter++;
                 not_perf_counter = 0;
