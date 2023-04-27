@@ -1,6 +1,8 @@
 #include <perfectgen.h>
 #include <iostream>
 
+int const PerfectGen::totalOpCount = 6;
+
 // Let G1, G2 be disjoint graphs, and Ki be a nonempty clique in Gi satisfying |K1| = |K2|. Define a one-to-one correspondence between vertices of K1 and K2; i.e., choose a bijective map f: K1->K2. A graph obtained by unifying each vertex v in K1 with vertex f(v) in K2 is said to arise from G1 and G2 by clique identification. A graph G obtained from two perfect graphs via clique identification is perfect.
 // We randomly select one vertex from G and one vertex from G', and extend each one to a maximal clique, say K1 and K2 . Without loss of generality, say |K1| ≤ |K2|. We randomly choose |K1| vertices from K2 and identify them with those in K1. The bijection f to identify those vertices is randomly determined.
 void PerfectGen::cliqueIdentification(igraph_t *result, igraph_t *left, igraph_t *right) {
@@ -214,27 +216,24 @@ void PerfectGen::complement(igraph_t *result, igraph_t *graph) {
 
 // PerfectGen algorithm explained in:
 // Oylum Şeker, Tınaz Ekim, and Zeki Caner Taşkın. “An Exact Cutting Plane Algorithm to Solve the Selective Graph Coloring Problem in Perfect Graphs”. In: European Journal of Operational Research 291(1) (2021), 67–83. doi: https://doi.org/10.1016/j.ejor.2020.09.017
-void PerfectGen::perfectGen(igraph_t *result, igraph_t *g1, igraph_t *g2) {
+void PerfectGen::perfectGen(igraph_t *result, igraph_integer_t op, igraph_t *g1, igraph_t *g2) {
 
-    // get random number for a random operation
-    int random = rand() % 6;
-
-    if (random == 0) {      // Clique Identification
+    if (op == 0) {      // Clique Identification
         PerfectGen::cliqueIdentification(result, g1, g2);
     }
-    else if (random == 1) { // Substitution
+    else if (op == 1) { // Substitution
         PerfectGen::substitution(result, g1, g2);
     }
-    else if (random == 2) { // Composition
+    else if (op == 2) { // Composition
         PerfectGen::composition(result, g1, g2);
     }
-    else if (random == 3) { // Disjoint Union
+    else if (op == 3) { // Disjoint Union
         PerfectGen::disjointUnion(result, g1, g2);
     }
-    else if (random == 4) { // Join
+    else if (op == 4) { // Join
         PerfectGen::join(result, g1, g2);
     }
-    else if (random == 5) { // Complement
+    else if (op == 5) { // Complement
         PerfectGen::complement(result, g1);
     }
 }
