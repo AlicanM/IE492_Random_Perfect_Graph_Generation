@@ -18,7 +18,7 @@ void PerfectGen::cliqueIdentification(igraph_t *result, igraph_t *left, igraph_t
         graph_size[i] = igraph_vcount(graph[i]);
 
         // Choose random vertices v1 in left graph and v2 in right graph
-        v[i] = igraph_rng_get_integer(igraph_rng_default(), 0, graph_size[i] - 1);
+        v[i] = rand() % graph_size[i];
 
         // Initialize clique subsets
         igraph_vector_int_init(&cliqueSubset[i], 1);
@@ -29,7 +29,7 @@ void PerfectGen::cliqueIdentification(igraph_t *result, igraph_t *left, igraph_t
         igraph_maximal_cliques_subset(graph[i], &cliqueSubset[i], &maximalCliqueList[i], no, NULL, 0, 0);
 
         // Get a random maximal clique from the maximal clique lists
-        maximalClique[i] = igraph_vector_int_list_get_ptr(&maximalCliqueList[i],  igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vector_int_list_size(&maximalCliqueList[i]) - 1));
+        maximalClique[i] = igraph_vector_int_list_get_ptr(&maximalCliqueList[i],  rand() % igraph_vector_int_list_size(&maximalCliqueList[i]));
 
         // Get clique sizes
         clique_size[i] = igraph_vector_int_size(maximalClique[i]);
@@ -88,7 +88,7 @@ void PerfectGen::cliqueIdentification(igraph_t *result, igraph_t *left, igraph_t
 // If G1 and G2 are perfect, a graph G derived via substitution of the two is perfect too.
 void PerfectGen::substitution(igraph_t *result, const igraph_t *left, const igraph_t *right) {
     // Choose a random vertex v in left graph
-    igraph_integer_t v = igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vcount(left) - 1);
+    igraph_integer_t v = rand() % igraph_vcount(left);
 
     // Get the neighbors of vertex v in left graph
     igraph_vector_int_t neighbors;
@@ -133,8 +133,8 @@ void PerfectGen::composition(igraph_t *result, const igraph_t *left, const igrap
     igraph_integer_t right_vcount = igraph_vcount(right);
 
     // Choose random vertices v1 in left graph and v2 in right graph
-    igraph_integer_t v1 = igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vcount(left) - 1);
-    igraph_integer_t v2 = igraph_rng_get_integer(igraph_rng_default(), 0, igraph_vcount(right) - 1);
+    igraph_integer_t v1 = rand() % igraph_vcount(left);
+    igraph_integer_t v2 = rand() % igraph_vcount(right);
 
     // store the disjoint union of two graphs
     igraph_disjoint_union(result, left, right);
