@@ -17,4 +17,3 @@ add_subdirectory(Graph_Generation/C5_Free)
 add_subdirectory(Graph_Generation/Markov_Chain_BFS)
 
 add_subdirectory(Tests)
-
