@@ -4,14 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include<ctime>
-#include <boost/filesystem.hpp>
-
-#ifdef _WIN32
-    #include <direct.h> // For Windows
-#else 
-    #include <sys/stat.h> // For UNIX-like systems
-#endif
+#include <filesystem>
+#include <chrono>
 
 bool parseArguments(int argc, char *argv[], igraph_integer_t size[], igraph_integer_t *op) {
     if (argc < 3) {
@@ -56,6 +50,55 @@ void printAdjacencyMatrix(igraph_t *graph) {
     igraph_matrix_destroy(&adjacency_matrix);
 }
 
+void generateOutput(int result_size, std::string *g6_result) {
+    std::ofstream outFile;
+    std::ifstream readFile, graphCountFile;
+
+    const std::string logDirectoryPath = "./logs";
+    std::string mckay_path = std::getenv("MCKAY_PATH");
+    const std::string outFileName = "perfect" + std::to_string(result_size) + ".g6";
+    const std::string filePath = mckay_path + "/" + outFileName;
+    const std::string graph_count_path = mckay_path + "/graph_counts/perfect" + std::to_string(result_size) + ".txt";
+
+    // Generate log
+    std::filesystem::create_directory(logDirectoryPath);
+    //TODO: generate log
+
+
+    // Write graph to file
+    readFile.open(graph_count_path);
+    bool fileExists = readFile.good();
+    int num_lines = 1;
+
+    if (fileExists) {
+        std::string line;
+        readFile >> num_lines;
+        readFile.close();
+        num_lines++;
+
+        readFile.open(filePath);
+        while (readFile >> line) {
+            if (line == *g6_result) {
+                std::cout << "The graph is already in " + outFileName << std::endl;
+                return;
+            }
+        }
+    }
+    readFile.close();
+
+    // Write the updated graph count
+    outFile.open(graph_count_path);
+    outFile << num_lines << "\n";
+    outFile.close();
+
+    outFile.open(filePath, std::ios::app); // Append to file
+    outFile << *g6_result << "\n";
+
+    // Close the file
+    outFile.close();
+    std::cout << "Written the graph in " << outFileName << (fileExists ? "." : ". (New file!)") << std::endl;
+}
+
 int main(int argc, char *argv[]) {
     srand(time(0));
 
@@ -66,62 +109,63 @@ int main(int argc, char *argv[]) {
     // Parse command line arguments
     if(!parseArguments(argc, argv, size, &op))
         return -1;
-    
+
     std::cout << "size1:\t" << size[0] << "\tsize2:\t" << size[1] << "\top:\t" << op << std::endl;
 
     // Get random McKay graphs and run PerfectGen
-    g6[0] = GraphConverter::getRandomMcKayGraph(size[0]);
+    g6[0] = GraphConverter::getRandomGraph(size[0]);
     GraphConverter::graph6_to_igraph(g6[0], &graph[0]);
 
+    std::chrono::system_clock::time_point start, end;
+
     if (op != 5) {
-        g6[1] = GraphConverter::getRandomMcKayGraph(size[1]);
+        g6[1] = GraphConverter::getRandomGraph(size[1]);
         GraphConverter::graph6_to_igraph(g6[1], &graph[1]);
         std::cout << "graph1:\t" << g6[0] << std::endl;
-        printAdjacencyMatrix(&graph[0]);
+//      printAdjacencyMatrix(&graph[0]);
         std::cout << "graph2:\t" << g6[1] << std::endl;
-        printAdjacencyMatrix(&graph[1]);
+//      printAdjacencyMatrix(&graph[1]);
+
+        start = std::chrono::system_clock::now();
         PerfectGen::perfectGen(&result, op, &graph[0], &graph[1]);
+        end = std::chrono::system_clock::now();
     }
     else {
         std::cout << "graph1:\t" << g6[0] << std::endl;
+        start = std::chrono::system_clock::now();
         PerfectGen::perfectGen(&result, op, &graph[0], NULL);
+        end = std::chrono::system_clock::now();
     }
-
+    
     // Result
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
 
     igraph_integer_t result_size = igraph_vcount(&result);
     std::cout << "A graph with size " << result_size << " is generated." << std::endl;
-    printAdjacencyMatrix(&result);
+    if (result_size < 10) {
+        std::cout << "Since result graph's size is less than "<< 10 << ", the graph is not written into a file." << std::endl;
+        return 0;
+    }
+//  printAdjacencyMatrix(&result);
 
     g6_result = GraphConverter::igraph_to_graph6(&result);
 
     // Output generation
-    std::ofstream outFile;
-    std::ifstream readFile;
+    generateOutput(result_size, &g6_result);
 
-    const std::string directoryPath = "./out";
-    const std::string outFileName = "perfectgen" + std::to_string(result_size) + ".txt";
-    const std::string filePath = directoryPath + "/" + outFileName;
+    std::cout << "Perfectness Check..." << std::endl;
+    // PERFECTNESS CHECK
+    /*
+    igraph_bool_t isPerfect;
+    start = std::chrono::system_clock::now();
+    igraph_is_perfect(&result, &isPerfect);
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end - start;
     
-    #ifdef _WIN32
-        _mkdir(directoryPath.c_str());      // For Windows
-    #else 
-        mkdir(directoryPath.c_str(), 0777); // For UNIX-like systems
-    #endif
-
-    readFile.open(filePath);
-
-    std::string line;
-    while (readFile >> line) {
-        if (line == g6_result) {
-            std::cout << "The graph is already in " + outFileName << std::endl;
-            return 0;
-        }
-    }
-    readFile.close();
-    outFile.open(filePath, std::ios::app);
+    std::cout << (isPerfect ? "Perfect" : "NOT perfect !!!") << std::endl;
+    std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
+    */
     
-    outFile << g6_result << "\n"; 
-    std::cout << "Written the graph in " + outFileName << std::endl;
     return 0;
 }
