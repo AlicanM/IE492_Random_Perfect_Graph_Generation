@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <bitset>
 #include <fstream>
-
+#include <iostream>
 
 // Initialize McKay's Graphs Counts
 std::map<int, int> GraphConverter::mckayGraphCount =
@@ -131,26 +131,37 @@ std::string GraphConverter::igraph_to_graph6(igraph_t *graph) {
 }
 
 // gets a random mckay graph in graph6 (.g6) format.
-std::string GraphConverter::getRandomMcKayGraph(int numOfVertices) {
+std::string GraphConverter::getRandomGraph(int numOfVertices) {
 
-    std::string mckay_path = std::getenv("MCKAY_PATH");
-    mckay_path += "/perfect" + std::to_string(numOfVertices) + ".g6";
+    std::string graph_path , graph_count_path, mckay_path = std::getenv("MCKAY_PATH");
+    graph_path = mckay_path +  "/perfect" + std::to_string(numOfVertices) + ".g6";
+    graph_count_path = mckay_path + "/graph_counts/perfect" + std::to_string(numOfVertices) + ".txt";
 
-    std::ifstream input(mckay_path);
-    std::string graph;
-    int l = input.tellg();
+    std::ifstream input(graph_count_path);
 
-    int stringLength = getGraph6StringLength(numOfVertices);
+    if (input.bad()) {
+        std::cerr << "Error occurred while opening " << graph_count_path << std::endl;
+        return "";
+    }
+    std::string line;
     
-    int graphCount = GraphConverter::mckayGraphCount.at(numOfVertices);
-    int random = rand() % graphCount;
+    int graphCount;
+    input >> graphCount;
+    int random = rand() % graphCount + 1;
 
-//  input.seekg((stringLength + 1)*random, input.beg);
+    input.close();
+    input.open(graph_path);
+
+    if (input.bad()) {
+        std::cerr << "Error occurred while opening " << graph_path << std::endl;
+        return "";
+    }
+
     for (int i = 0; i < random; i++) {
-       input >> graph;
+       input >> line;
     }
     input.close();
-    return graph;
+    return line;
 }
 
 int GraphConverter::getGraph6StringLength(int numOfVertices) {
