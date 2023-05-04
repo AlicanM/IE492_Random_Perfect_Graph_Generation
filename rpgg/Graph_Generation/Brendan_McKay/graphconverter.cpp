@@ -3,18 +3,19 @@
 #include <algorithm>
 #include <bitset>
 #include <fstream>
-
+#include <iostream>
 
 // Initialize McKay's Graphs Counts
-GraphConverter::GraphConverter(){
-    mckayGraphCount[5]  = 33;
-    mckayGraphCount[6]  = 148;
-    mckayGraphCount[7]  = 906;
-    mckayGraphCount[8]  = 8887;
-    mckayGraphCount[9]  = 136756;
-    mckayGraphCount[10] = 3269264;
-    mckayGraphCount[11] = 115811998;
-}
+std::map<int, int> GraphConverter::mckayGraphCount =
+{
+    {5, 33},
+    {6, 148},
+    {7, 906},
+    {8, 8887},
+    {9, 136756},
+    {10, 3269264},
+    {11, 115811998}
+};
 
 // Parses graph6 (.g6) format, creates an igraph and assigns it to the given igraph pointer
 // Details of graph6 format can be found at: https://users.cecs.anu.edu.au/~bdm/data/formats.txt
@@ -130,12 +131,41 @@ std::string GraphConverter::igraph_to_graph6(igraph_t *graph) {
 }
 
 // gets a random mckay graph in graph6 (.g6) format.
-std::string GraphConverter::getRandomMcKayGraph(int numOfVertices) {
+std::string GraphConverter::getRandomGraph(int numOfVertices) {
 
-    std::ifstream input("../Graph_Generation/Brendan_McKay/Generated_Perfect_Graphs/perfect" + std::to_string(numOfVertices) + ".g6");
-    std::string graph;
+    std::string graph_path , graph_count_path, mckay_path = std::getenv("MCKAY_PATH");
+    graph_path = mckay_path +  "/perfect" + std::to_string(numOfVertices) + ".g6";
+    graph_count_path = mckay_path + "/graph_counts/perfect" + std::to_string(numOfVertices) + ".txt";
 
-    int Nlength, adjListLength, stringLength, random;
+    std::ifstream input(graph_count_path);
+
+    if (input.bad()) {
+        std::cerr << "Error occurred while opening " << graph_count_path << std::endl;
+        return "";
+    }
+    std::string line;
+    
+    int graphCount;
+    input >> graphCount;
+    int random = rand() % graphCount + 1;
+
+    input.close();
+    input.open(graph_path);
+
+    if (input.bad()) {
+        std::cerr << "Error occurred while opening " << graph_path << std::endl;
+        return "";
+    }
+
+    for (int i = 0; i < random; i++) {
+       input >> line;
+    }
+    input.close();
+    return line;
+}
+
+int GraphConverter::getGraph6StringLength(int numOfVertices) {
+    int Nlength, adjListLength, stringLength;
     if (0 <= numOfVertices && numOfVertices < 63)
         Nlength = 1;
     else if (62 < numOfVertices && numOfVertices < 258048)
@@ -147,10 +177,5 @@ std::string GraphConverter::getRandomMcKayGraph(int numOfVertices) {
     adjListLength = ((adjListLength % 6) ? (adjListLength / 6 + 1) : (adjListLength / 6));
     
     stringLength = Nlength + adjListLength;
-    random = rand() % mckayGraphCount[numOfVertices];
-
-    input.seekg((stringLength + 1)*random, input.beg);
-    input >> graph;
-    input.close();
-    return graph;
+    return stringLength;
 }

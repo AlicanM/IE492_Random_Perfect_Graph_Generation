@@ -9,7 +9,6 @@
 
 // Example use case of GraphConverter class
 int main() {
-    GraphConverter graphConverter;
     srand(time(NULL));
     std::vector<std::string> str;
     str.push_back("D?_"); // percect graph
@@ -46,7 +45,7 @@ int main() {
     }
 
     for (int i = 0; i < 5; i++) {
-        std::cout << graphConverter.getRandomMcKayGraph(7) << std::endl;
+        std::cout << GraphConverter::getRandomMcKayGraph(7) << std::endl;
     }
     return 0;
 }

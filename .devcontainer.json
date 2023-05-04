@@ -10,5 +10,9 @@
         "ms-vscode.cpptools-extension-pack"
       ]
     }
+  },
+  "containerEnv": {
+    "MCKAY_PATH": "/ie492_rpgg/rpgg/Graph_Generation/Brendan_McKay/Generated_Perfect_Graphs",
+    "RPGG_PATH": "/ie492_rpgg/rpgg"
   }
 }
