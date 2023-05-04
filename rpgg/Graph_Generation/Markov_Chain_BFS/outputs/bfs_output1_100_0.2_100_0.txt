@@ -1,0 +1,1 @@
+GraphNo		#ofSkips	#ofModifications	GraphGenTime	TimeAfterLastSkip	TotalTime

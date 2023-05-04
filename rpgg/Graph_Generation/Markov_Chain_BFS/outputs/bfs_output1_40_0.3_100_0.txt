@@ -1,0 +1,10 @@
+GraphNo		#ofSkips	#ofModifications	GraphGenTime	TimeAfterLastSkip	TotalTime
+	1			7				0				76 sec				5 sec			76 sec
+	2			5				0				50 sec				4 sec			126 sec
+	3			5				0				52 sec				6 sec			178 sec
+	4			6				0				59 sec				5 sec			237 sec
+	5			2				0				39 sec				6 sec			276 sec
+	6			17				0				170 sec				5 sec			446 sec
+	7			12				284				131 sec				7 sec			577 sec
+	8			21				0				222 sec				5 sec			799 sec
+	9			0				0				6 sec				6 sec			805 sec
