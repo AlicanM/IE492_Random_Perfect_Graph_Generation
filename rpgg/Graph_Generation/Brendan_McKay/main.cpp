@@ -45,7 +45,7 @@ int main() {
     }
 
     for (int i = 0; i < 5; i++) {
-        std::cout << GraphConverter::getRandomMcKayGraph(7) << std::endl;
+        std::cout << GraphConverter::getRandomGraph(7) << std::endl;
     }
     return 0;
 }
