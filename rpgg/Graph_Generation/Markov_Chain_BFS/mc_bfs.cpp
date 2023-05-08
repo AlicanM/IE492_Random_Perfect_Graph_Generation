@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <oylum.h>
+#include <chrono>
 
 using namespace std;
 
@@ -121,6 +122,8 @@ void possible_oddcycle_modifications(igraph_t *graph, bool mode){
 
 int main(int argc, char const *argv[])
 {
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     if (argc < 5){
         cout << "./mc_bfs vertices density repetition mode" << endl;
         cout << "\tvertices as integer" << endl;
@@ -199,7 +202,9 @@ int main(int argc, char const *argv[])
         out_graphs << GraphConverter::igraph_to_graph6(&graph) << endl;
         out_results << "\t" << i << "\t\t\t" << skip_counter << "\t\t\t\t" << not_perf_counter << "\t\t\t\t" << graph_timer << " sec\t\t\t\t" << mc_timer << " sec\t\t\t" << total_timer << " sec" << endl;
     }
-
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
+    std::cout << "Elapsed time: " << elapsed_time.count() << " seconds" << std::endl;
     igraph_destroy(&graph);
     out_results.close();
     out_graphs.close();

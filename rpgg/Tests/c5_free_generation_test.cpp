@@ -4,9 +4,9 @@
 
 using namespace std;
 
-#define VERTICES  30
-#define DENSITY 0.3
-#define REPETITION  6000
+#define VERTICES  13
+#define DENSITY 0.5
+#define REPETITION  500
 
 int main(int argc, char const *argv[])
 {
