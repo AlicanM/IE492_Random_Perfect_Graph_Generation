@@ -5,18 +5,6 @@
 #include <fstream>
 #include <iostream>
 
-// Initialize McKay's Graphs Counts
-std::map<int, int> GraphConverter::mckayGraphCount =
-{
-    {5, 33},
-    {6, 148},
-    {7, 906},
-    {8, 8887},
-    {9, 136756},
-    {10, 3269264},
-    {11, 115811998}
-};
-
 // Parses graph6 (.g6) format, creates an igraph and assigns it to the given igraph pointer
 // Details of graph6 format can be found at: https://users.cecs.anu.edu.au/~bdm/data/formats.txt
 void GraphConverter::graph6_to_igraph(const std::string g6string, igraph_t *graph) {
