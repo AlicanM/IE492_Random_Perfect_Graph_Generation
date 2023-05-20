@@ -16,3 +16,7 @@ showg_
 
 bfs_output*.txt
 bfs_output*.g6
+
+# Perfect graphs
+perfect*.g6
+perfect*.txt
