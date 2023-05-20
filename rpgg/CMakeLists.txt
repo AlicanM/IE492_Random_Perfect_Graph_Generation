@@ -18,7 +18,7 @@ link_directories(${CMAKE_SOURCE_DIR}/Graph_Generation/PerfectGen)
 add_subdirectory(Graph_Recognition/Oylum)
 add_subdirectory(Graph_Generation/Brendan_McKay)
 add_subdirectory(Graph_Generation/C5_Free)
-add_subdirectory(Graph_Generation/CleanOddCycle_Generation)
+#add_subdirectory(Graph_Generation/CleanOddCycle_Generation)
 add_subdirectory(Graph_Generation/PerfectGen)
 add_subdirectory(Graph_Generation/Markov_Chain_BFS)
 
