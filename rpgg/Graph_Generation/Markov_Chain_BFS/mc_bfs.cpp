@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <oylum.h>
+#include <chrono>
 
 using namespace std;
 
@@ -121,29 +122,32 @@ void possible_oddcycle_modifications(igraph_t *graph, bool mode){
 
 int main(int argc, char const *argv[])
 {
-    if (argc < 5){
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    if (argc < 6){
         cout << "./mc_bfs vertices density repetition mode" << endl;
         cout << "\tvertices as integer" << endl;
         cout << "\tdensity as float" << endl;
         cout << "\trepetition as integer" << endl;
         cout << "\tmode as {0,1,2} where 0 is start vertex connection, 1 is cousin connection, 2 as hybrid" << endl;
+        cout << "\tgraph generation as {0,1} where 0 is erdos renyi graph generation, 1 is C5 free graph generation" << endl;
         return 1;
     }
 
-    int vertices = atoi(argv[1]), repetition = atoi(argv[3]), mode = atoi(argv[4]) ;
+    int vertices = atoi(argv[1]), repetition = atoi(argv[3]), mode = atoi(argv[4]), graph_mode = atoi(argv[5]) ;
     float density = atof(argv[2]);
 
     //Filename handler for running in parallel instance
     char res_file_name[1024], graph_file_name[1024];
-    char path[70] = "/ie492_rpgg/rpgg/Graph_Generation/Markov_Chain_BFS/outputs/bfs_output";
+    char path[74] = "/ie492_rpgg/rpgg/Graph_Generation/Markov_Chain_BFS/outputs2/mc_bfs_output";
     int version = 1;
-    sprintf(res_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
-    sprintf(graph_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".g6");
+    sprintf(res_file_name, "%s%s%d%s%.1f%s%d%s%d%s%d%s%d%s", path, "_", vertices, "_", density, "_", repetition, "_", mode, "_", graph_mode, "_v", version, ".txt");
+    sprintf(graph_file_name, "%s%s%d%s%.1f%s%d%s%d%s%d%s%d%s", path, "_", vertices, "_", density, "_", repetition, "_", mode, "_", graph_mode, "_v", version, ".g6");
 
     while(access(res_file_name, F_OK ) != -1 ){
         version++;
-        sprintf(res_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".txt");
-        sprintf(graph_file_name, "%s%d%s%d%s%.1f%s%d%s%d%s", path, version, "_", vertices, "_", density, "_", repetition, "_", mode, ".g6");
+        sprintf(res_file_name, "%s%s%d%s%.1f%s%d%s%d%s%d%s%d%s", path, "_", vertices, "_", density, "_", repetition, "_", mode, "_", graph_mode, "_v", version, ".txt");
+        sprintf(graph_file_name, "%s%s%d%s%.1f%s%d%s%d%s%d%s%d%s", path, "_", vertices, "_", density, "_", repetition, "_", mode, "_", graph_mode, "_v", version, ".g6");
     }
 
     ofstream out_results(res_file_name);
@@ -152,54 +156,76 @@ int main(int argc, char const *argv[])
     igraph_t graph;
     time_t total_timer = 0;    
 
-    out_results << "GraphNo\t\t#ofSkips\t#ofModifications\tGraphGenTime\tTimeAfterLastSkip\tTotalTime" << endl;
+    out_results << "GraphNo;#ofSkips;#ofModifications;GraphGenTime;PerfectCheckTime;ModificationTime;TotalTime" << endl;
     // Generate repetition number of times perfect graph
     for(int i = 1; i <= repetition; i++){
         int skip_counter = 0, not_perf_counter = 0;
-        time_t graph_timer = time(NULL), mc_timer = time(NULL);    
 
-        cout << "C5 Free Generation of Graph " << i << "started." << endl;
-        generate_c5_free_graph(&graph, vertices, density);
+        time_t graph_timer = time(NULL);    
+        if(graph_mode == 0){
+            cout << "Erdos Reyni Generation of Graph " << i << "started." << endl;
+            igraph_erdos_renyi_game(&graph, IGRAPH_ERDOS_RENYI_GNP,  vertices, density, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+            cout << "\tErdos Reyni Generation of Graph " << i << " ended, starting perfectness check." << endl;
+        }else if(graph_mode == 1){
+            cout << "C5 Free Generation of Graph " << i << "started." << endl;
+            generate_c5_free_graph(&graph, vertices, density);
+            cout << "\tC5 Free Generation of Graph " << i << " ended, starting perfectness check." << endl;
+        }
+        graph_timer = time(NULL) - graph_timer;
 
-        cout << "C5 Free Generation of Graph " << i << " ended, starting perfectness check." << endl;
+        time_t perf_check_timer = time(NULL);    
         bool is_perfect;
         igraph_is_perfect(&graph, &is_perfect);
-        cout << "Perfectness check of Graph " << i << " ended." << endl;
+        cout << "\tPerfectness check of Graph " << i << " ended." << endl;
+        perf_check_timer = time(NULL) - perf_check_timer;
+
+        time_t mc_timer = 0;
 
         while(!is_perfect){
-
-            // If a graph cant be perfected in v^2 tries then generate new graph
+            // If a graph cant be perfected in v^4 tries then generate new graph
             not_perf_counter++;
-            if(not_perf_counter >= vertices*vertices){
-                cout << "Regeneration C5 Free for Graph " << i << " started. not_perf_counter = " << not_perf_counter << endl;
+            if(not_perf_counter >= long(vertices)*vertices*vertices*vertices){
                 skip_counter++;
-                not_perf_counter = 0;
-                mc_timer = time(NULL);
-                generate_c5_free_graph(&graph, vertices, density);
-                cout << "Regeneration C5 Free for Graph " << i << " ended." << endl;
-            }
                 
-            cout << "Modification of Graph " << i << " started." << endl;
+                graph_timer = graph_timer - time(NULL);
+                if(graph_mode == 0){
+                    cout << "Regeneration Erdos Reyni for Graph " << i << " started. not_perf_counter = " << not_perf_counter << endl;
+                    igraph_erdos_renyi_game(&graph, IGRAPH_ERDOS_RENYI_GNP,  vertices, density, IGRAPH_UNDIRECTED, IGRAPH_NO_LOOPS);
+                    cout << "\tRegeneration Erdos Reyni for Graph " << i << " ended." << endl;
+                }else if(graph_mode == 1){
+                    cout << "Regeneration C5 Free for Graph " << i << " started. not_perf_counter = " << not_perf_counter << endl;
+                    generate_c5_free_graph(&graph, vertices, density);
+                    cout << "\tRegeneration C5 Free for Graph " << i << " ended." << endl;
+                }
+                graph_timer = graph_timer + time(NULL);
+
+                not_perf_counter = 0;
+            }
+            
+            mc_timer = mc_timer - time(NULL);
+            cout << "Modification of Graph " << i << " started. not_perf_counter = " << not_perf_counter << " skip_counter = " << skip_counter << endl;
             // Call markov chain seperation with given mode
             if(mode == 0) possible_oddcycle_modifications(&graph, true);
             else if (mode == 1) possible_oddcycle_modifications(&graph, false);
             else if (mode == 2) possible_oddcycle_modifications(&graph, i%2);
-            cout << "Modification of Graph " << i << " ended, starting perfectness check." << endl;
+            cout << "\tModification of Graph " << i << " ended, starting perfectness check." << endl;
+            mc_timer = mc_timer + time(NULL);
 
-            //PerfectnessChecker pChecker;
-            //pChecker.ReadGraph(&graph);
-            //is_perfect = pChecker.CheckPerfectness();
+            perf_check_timer = perf_check_timer - time(NULL);
             igraph_is_perfect(&graph, &is_perfect);
-            cout << "Perfectness check of Graph " << i << " ended." << endl;
+            cout << "\tPerfectness check of Graph " << i << " ended." << endl;
+            perf_check_timer = perf_check_timer + time(NULL);
+
         }
         cout << "Graph " << i << " generated." << endl;
-        graph_timer = time(NULL) - graph_timer;
-        mc_timer = time(NULL) - mc_timer;
-        total_timer += graph_timer;
-        out_graphs << GraphConverter::igraph_to_graph6(&graph) << endl;
-        out_results << "\t" << i << "\t\t\t" << skip_counter << "\t\t\t\t" << not_perf_counter << "\t\t\t\t" << graph_timer << " sec\t\t\t\t" << mc_timer << " sec\t\t\t" << total_timer << " sec" << endl;
-    }
 
+        total_timer += graph_timer + perf_check_timer + mc_timer;
+        out_graphs << GraphConverter::igraph_to_graph6(&graph) << endl;
+        out_results << i << ";" << skip_counter << ";" << not_perf_counter << ";" << graph_timer << ";" << perf_check_timer << ";" << mc_timer << ";" << total_timer << endl;
+    }
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
+    std::cout << "Elapsed time: " << elapsed_time.count() << " seconds" << std::endl;
     igraph_destroy(&graph);
     out_results.close();
     out_graphs.close();
