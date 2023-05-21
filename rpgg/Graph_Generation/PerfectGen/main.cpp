@@ -1,11 +1,13 @@
 #include <perfectgen.h>
 #include <graphconverter.h>
+#include <graphstatistics.h>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <filesystem>
 #include <chrono>
+#include <tuple>
 
 void getArguments(int *size1, int *size2, int *op, int *graphCount) {
     std::cout << "Enter the first graph's size? (Must be >= 5)\t";
@@ -51,7 +53,7 @@ void printAdjacencyMatrix(igraph_t *graph) {
     igraph_matrix_destroy(&adjacency_matrix);
 }
 
-void generateOutput(igraph_t *result) {
+void generateOutput(igraph_t *result, double elapsed_time) {
     // Result
 
     igraph_integer_t result_size = igraph_vcount(result);
@@ -70,7 +72,9 @@ void generateOutput(igraph_t *result) {
     std::ifstream readFile, graphCountFile;
 
     const std::string logDirectoryPath = "./logs";
-    std::string mckay_path = std::getenv("MCKAY_PATH");
+    const std::string allGraphsLogPath = logDirectoryPath + "/all_log.csv";
+    const std::string graphsLogPath = logDirectoryPath + "/perfect" + std::to_string(result_size) + "_log.csv";
+    const std::string mckay_path = std::getenv("MCKAY_PATH");
     const std::string outFileName = "perfect" + std::to_string(result_size) + ".g6";
     const std::string filePath = mckay_path + "/" + outFileName;
     const std::string allGraphsFilePath = mckay_path + "/" + "allperfectgraphs.g6";
@@ -79,8 +83,6 @@ void generateOutput(igraph_t *result) {
 
     // Generate log
     std::filesystem::create_directory(logDirectoryPath);
-    //TODO: generate log
-
 
     // Write graph to file
     readFile.open(graph_count_path);
@@ -109,6 +111,9 @@ void generateOutput(igraph_t *result) {
         readFile >> all_num_lines;
         all_num_lines++;
     }
+    GraphStatistics::writeStatistics(num_lines, result, elapsed_time, &graphsLogPath);
+    GraphStatistics::writeStatistics(num_lines, result, elapsed_time, &allGraphsLogPath);
+
     readFile.close();
 
     // Write the updated graph count
@@ -130,7 +135,7 @@ void generateOutput(igraph_t *result) {
     std::cout << "Written the graph in " << outFileName << (fileExists ? "." : ". (New file!)") << std::endl;
 }
 
-int runPerfectGen(int it, int size1, int size2, int op, igraph_t *graph1, igraph_t *graph2, igraph_t *result) {
+std::tuple<int,double> runPerfectGen(int it, int size1, int size2, int op, igraph_t *graph1, igraph_t *graph2, igraph_t *result) {
     if (0 > op || op >= PerfectGen::totalOpCount) {
         op = rand() % PerfectGen::totalOpCount;
     }
@@ -164,7 +169,7 @@ int runPerfectGen(int it, int size1, int size2, int op, igraph_t *graph1, igraph
     }
     std::chrono::duration<double> elapsed_seconds = end - start;
     std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
-    return op;
+    return std::tuple<int,double>{op, elapsed_seconds.count()};
 }
 int main(int argc, char *argv[]) {
     srand(time(0));
@@ -176,12 +181,12 @@ int main(int argc, char *argv[]) {
     // Parse command line arguments
     getArguments(&size1, &size2, &op, &graphCount);
     for (int i = 1; i <= graphCount; i++) {
-        int usedOp = runPerfectGen(i, size1, size2, op, &graph1, &graph2, &result);
-        generateOutput(&result);
+        std::tuple<int,double> op_N_elapsedTime = runPerfectGen(i, size1, size2, op, &graph1, &graph2, &result);
+        generateOutput(&result, std::get<double>(op_N_elapsedTime));
         std::cout << std::endl;
         igraph_destroy(&result);
         igraph_destroy(&graph1);
-        if (usedOp != 5)
+        if (std::get<int>(op_N_elapsedTime) != 5)
             igraph_destroy(&graph2);
     }
     
