@@ -1,0 +1,167 @@
+\documentclass[12pt, oneside, a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{pgfgantt}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage[backend=biber, sorting=nty]{biblatex}
+\bibliography{references}
+
+\DeclareSortingNamekeyScheme{
+  \keypart{
+    \namepart{given}
+  }
+  \keypart{
+    \namepart{prefix}
+  }
+  \keypart{
+    \namepart{family}
+  }
+  \keypart{
+    \namepart{suffix}
+  }
+}
+
+\hypersetup{
+    colorlinks=false,
+    pdftitle={IE 492 Project Proposal: Generating Random Perfect Graphs} ,
+    pdfauthor = {Ali Can Milani, Aral Dörtoğul, Fatih Mehmet Yılmaz},
+    bookmarksopen = true,
+    colorlinks = false,
+    pdfpagemode=FullScreen,
+    hidelinks
+    }
+    
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+            
+        \LARGE
+        IE 492: Project
+            
+        \vspace{1cm}
+        \includegraphics[width=0.55\textwidth]{/Users/araldortogul/Documents/IE (Old)/IE 312/Assignment 1/images/boun-logo}
+        
+        Project Proposal\\[0.3cm]
+        \huge
+        Generating Random Perfect Graphs
+        
+        \vspace{0.5cm}
+        \LARGE
+        Advisor: Tınaz Ekim
+        
+            
+        \vfill
+        
+        \begin{table}[h]
+        \centering
+        \Large
+        \begin{tabular}{p{6.5cm}r}
+        Ali Can Milani & 2018402171 \\
+        Aral Dörtoğul & 2018402108 \\
+        Fatih Mehmet Yılmaz & 2017402066
+        \end{tabular}
+        \end{table}
+            
+        \vfill
+            
+        \large
+        Industrial Engineering\\
+        Boğaziçi University
+        
+        \vspace{0.8cm}
+
+        \today
+            
+    \end{center}
+\end{titlepage}
+
+\newpage
+
+%\linespread{1.25}
+
+\section{Problem Description}
+
+Graph theory is a mathematical field concerned with the study of graphs, which are mathematical structures consisting of nodes or vertices connected by edges or arcs. Graph theory has numerous applications in various fields such as computer science, engineering, physics, social sciences, and operations research.
+
+Graphs are used to model many real-world situations, such as social networks, transportation networks, electrical circuits, and communication networks. For example, in social networks, graphs are used to represent people as nodes and relationships between them as edges. In transportation networks, graphs are used to model the routes between different cities as edges and the cities themselves as nodes. In electrical circuits, graphs are used to represent the connections between different components as edges and the components themselves as nodes.
+
+Perfect graphs are a class of graphs that have several interesting properties, making them useful for modeling real-world problems in various fields such as transportation, scheduling, and communication networks. Some well-known subclasses of perfect graphs, including chordal and interval graphs, have been extensively studied in the literature due to their practical applications.
+
+Graph algorithms for solving these problems mostly perform in exponential time. However, algorithms designed for specific graph classes such as perfect graphs perform in polynomial time. To verify these algorithms and evaluate their performance, algorithms need to be tested for the whole set of graphs of its specific class. So, generating random perfect graphs can be a practical solution to test these algorithms and analyze their performance. This study is for designing algorithms that will generate perfect graphs and for comparing those algorithms.
+
+\section{Literature Review}
+
+An odd hole is an induced cycle of length at least 5 with an odd number of vertices. An odd anti-hole is the complement of an odd hole. Chudnovsky, Robertson, Seymour, and Thomas~\cite{spgt} proved the Strong Perfect Graph Theorem (SPGT), which states that a graph is perfect if and only if it does not contain an odd hole or the complement of the odd hole. Therefore, determining whether a graph is perfect can be done by identifying the presence of an odd hole, which can be found either in the graph itself or in its complement. In other words, recognizing the perfectness of a graph is equivalent to identifying whether there exists an odd hole in the graph or its complement.
+
+In the literature, perfect graphs have been widely studied. In 1963, Claude Berge coined the term perfect graph, and he conjectured both the perfect graph theorem and the strong perfect graph theorem~\cite{berge}. 
+Creating random graphs in general is a starting point in the domain. The Erdos-Renyi model is a method for creating random graphs given the density and number of vertices of a graph~\cite{erdos}. This model selects an edge at random and adds it to the graph with a certain probability. The goal of generating a random graph is to ensure that every graph has a non-zero probability of being generated, and that the probability distribution ideally is uniformly distributed for all possible graphs.
+ 
+Some recognition algorithms for perfect graph class are proposed in the literature. Chudnovsky et. al. proposed a recognition time algorithm for detecting perfect graphs that has a polynomial time complexity~\cite{berge-graph}. However, this algorithm fails to give the difference between an odd hole and an odd anti-hole. This results in the fact that with this algorithm, whether a graph is perfect or not can be decided but the reason behind this result cannot be understood.
+
+In a paper by Chudnovsky, Seymour, and Vuskovic~\cite{odd-hole}, a polynomial-time algorithm for detecting odd holes in graphs is described. This result is significant since in this paper, the reason behind the perfectness or not-perfectness can be explained. This algorithm can differentiate between an odd hole and the complement of the odd hole.
+In another paper by Oylum Şeker, Tınaz Ekim, and Z. Caner Taşkın~\cite{tinaz}, a perfect graph generation algorithm called \texttt{PerfectGen} is proposed using some available perfect graphs, which is enumerated up to 11 vertices by McKay~\cite{mckay} and perfection-preserving operations. The authors created perfect graphs with many vertices using operations that preserve perfection. Their approach involved combining small, already known perfect graphs using one of six specific operations that maintain perfection, resulting in a larger perfect graph. They repeated this process until the desired number of vertices was reached. However, this approach does not guarantee that every perfect graph can be generated uniformly at random.
+
+\newpage
+
+\section{Methodology}
+
+In this project, one of the algorithms that will be used for random perfect generation follows a programming approach, where it will take any number of perfect graphs from a pool and combine them to generate a new perfect graph using specific combining methods. We will improve Algorithm \texttt{PerfectGen} by using possible new operations such as amalgam~\cite{burlet}, 2-amalgam~\cite{cornuejols} or 2-join, double star cut-set or skew partition~\cite{trotignon} in addition to the ones defined in the paper by Oylum Seker, Tınaz Ekim, and Z. Caner Taşkın~\cite{tinaz}. Also, another possible improvement to Algorithm \texttt{PerfectGen} is adding more perfect graphs to the starting pool. This improvement will expand the range of potential random perfect graphs that can be generated.
+
+Another one of the algorithms in the project will follow Markov Chain Monte Carlo methods. It will generate a random graph and make clever random edge changes. Then the polynomial-time recognition algorithm will be implemented from the literature~\cite{tinaz}, to check if the generated graph is a perfect graph, if not the algorithm will make clever random edge changes again and repeat the process. Almost no random graph generated firstly by using Erdos--Renyi Model will be perfect. Therefore, we will use a better technique, where C5-free or (Clean Odd Cycle)-free random graphs are generated, and then the edges are modified until reaching perfectness. This method is based on the idea that almost all C5-free graphs are perfect when the number of vertices goes to infinity~\cite{promel}.
+ 
+At last, the perfect graph generators developed will be compared experimentally with respect to the run time and the sizes of the generated graphs, and other related parameters of the generated graphs such as number of maximal cliques, clique number, independence number.
+
+\newpage
+
+\section{Project Timeline}
+\begin{figure}[h]
+\begin{center}
+\begin{adjustbox}{max width=\textwidth}
+\begin{ganttchart}[
+hgrid,
+vgrid,
+time slot format=isodate,
+bar label node/.append style={align=right},
+y unit chart = 17mm,
+y unit title = 17mm,
+x unit = 3.6mm,
+milestone/.append style={xscale=2.428, fill=YellowOrange, rounded corners=5pt},
+bar/.append style={fill=SpringGreen!50},
+]{2023-02-20}{2023-06-03}
+\ganttset{bar height=.6}
+\gantttitlecalendar{year, month=name, week} \\
+
+%tasks
+%project kickoff 20 Feb
+\ganttmilestone{Project kickoff}{2023-02-20} \\
+\ganttbar{Proposal preparation}{2023-02-20}{2023-03-03} \\
+\ganttbar{Updating and joining\ganttalignnewline Oylum’s detection algorithm\ganttalignnewline with graph libraries}{2023-03-04}{2023-03-29} \\
+\ganttbar{Basic implementation\ganttalignnewline of Markov Chain\ganttalignnewline Monte Carlo algorithm}{2023-03-11}{2023-04-02} \\
+\ganttbar{Basic implementation\ganttalignnewline of \texttt{PerfectGen} algorithm}{2023-03-15}{2023-04-02} \\
+% midterm 3 apr
+\ganttmilestone{Midterm presentation}{2023-04-03} \\
+\ganttbar{Improvement of\ganttalignnewline Markov Chain Monte\ganttalignnewline Carlo algorithm}{2023-04-04}{2023-04-28} \\
+\ganttbar{Improvement of\ganttalignnewline \texttt{PerfectGen} algorithm}{2023-04-04}{2023-04-28} \\
+\ganttbar{Implementation of new\ganttalignnewline algorithms by combining\ganttalignnewline previous algorithms}{2023-04-18}{2023-05-05} \\
+\ganttbar{Comparison and analysis}{2023-05-05}{2023-05-22} \\
+% final presentation 22 may
+\ganttmilestone{Final presentation}{2023-05-22} \\
+\ganttbar{Report preparation}{2023-05-23}{2023-06-01} \\
+% report submission 2 jun
+\ganttmilestone{Report submission}{2023-06-02}
+
+%relations 
+
+\end{ganttchart}
+\end{adjustbox}
+\end{center}
+\end{figure}
+
+\newpage
+
+\printbibliography
+
+\end{document}
