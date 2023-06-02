@@ -1,0 +1,39 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Random Perfect Graph Generation
+message: >-
+  This repository includes several algorithms to generate
+  random perfect graphs, as well as algorithms to visualize,
+  analyze and store them.
+type: software
+authors:
+  - given-names: Aral
+    family-names: Dörtoğul
+    email: aral.dortogul@boun.edu.tr
+    affiliation: Boğaziçi University
+  - given-names: Ali Can
+    family-names: Milani
+    email: ali.milani@boun.edu.tr
+    affiliation: Boğaziçi University
+  - given-names: Fatih Mehmet
+    family-names: Yılmaz
+    email: fatihmehmety3@gmail.com
+    affiliation: Boğaziçi University
+repository-code: >-
+  https://github.com/AlicanM/IE492_Random_Perfect_Graph_Generation
+abstract: >-
+  This repository includes several algorithms written in C++
+  using igraph library to generate random perfect graphs, as
+  well as algorithms to visualize, analyze and store them.
+keywords:
+  - random
+  - perfect
+  - graph
+  - generation
+  - graph theory
+  - igraph
+commit: abb08fef57e1a5ebf98956ff24c73e8fefe3ecf2
+version: 0.0.1
+date-released: '2023-06-02'
