@@ -1,0 +1,71 @@
+\begin{figure}[h]
+    \centering
+    \adjustbox{max width=\textwidth}{%
+    \begin{tikzpicture}
+
+        %% Nodes %%
+        \node (G1_l) {$G_1$};
+        \node[right = 3cm of G1_l] (G2_l) {$G_2$};
+
+        \node[right = 4cm of G2_l] (G_l) {$G$};
+        
+        \node[above = 15mm of G1_l, centered] (G1) {
+        \begin{tikzpicture}[
+        anchor=south,
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30},
+        subgraph nodes={label=120:$N$, dashed, very thin},
+        subgraph text none]
+            \graph[simple necklace layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=10mm
+            ]
+            {
+                a -- b -- c -- d[red, label=right:$v$] -- a;
+                K1 [draw]  // { a, c };
+            };
+        \end{tikzpicture}};
+
+        \node[above = 15mm of G2_l, centered] (G2) {
+        \begin{tikzpicture}[
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30}]
+            \graph[spring layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=8mm,
+                vertical= a to b
+            ]
+            {
+                a -- b -- c -- a;
+            };
+        \end{tikzpicture}};
+
+        \node[above = 15mm of G_l, centered] (G) {
+        \begin{tikzpicture}[
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30},
+        subgraph nodes={label=120:$N$, dashed, very thin},
+        subgraph text none]
+            \graph[spring layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=5mm,
+                horizontal = a to f
+            ]
+            {
+                a -- {b,c};
+                b -- {d[nudge down = 2.2mm],e[nudge up = 2.2mm],f[nudge right = 12mm]};
+                c -- {d,e,f};
+                d -- e -- f -- d;
+                N [draw]  // { b, c };
+            };
+        \end{tikzpicture}};
+        
+        \draw[->, thick, shorten >=3mm, shorten <=3mm] (G2) -- (G);
+    \end{tikzpicture}
+    }%
+    \caption{Substitution}
+    \label{fig:substitutionExample}
+\end{figure}

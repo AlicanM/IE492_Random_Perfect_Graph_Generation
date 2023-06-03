@@ -1,0 +1,30 @@
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  \label{alg:c5check}
+  \Input{A graph $G$}
+  \Output{Whether the graph $G$ is C5-free or not}
+  
+  \ForEach{edge $e$ in $G$}{
+    Let $(u, v)$ be the endpoints of edge $e$\;
+    
+    Remove edge $e$ from $G$\;
+    
+    Let $neighbors1$ be the neighbors of $u$ in $G$\;
+    Let $neighbors2$ be the neighbors of $v$ in $G$\;
+    
+    \ForEach{vertex $w$ in $neighbors1$}{
+      \If{$w$ is in $neighbors2$}{
+        \textbf{Output} "Graph $G$ is not C5-free."\;
+        \textbf{Terminate}\;
+      }
+    }
+    
+    Add edge $e$ back to $G$\;
+  }
+  
+  \textbf{Output} "Graph $G$ is C5-free."\;
+  
+  \caption{C5-Free Graph Recognition Algorithm}
+\end{algorithm}

@@ -1,0 +1,27 @@
+\begin{algorithm}[H]
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  \caption{Parent Vertex Approach in Heuristic Repair Algorithm}
+  \label{alg:parentvertex}
+  \Input{Starting Graph $G$}
+  \Output{Edge-Modified Graph}
+  \SetAlgoLined
+  \SetKwFunction{BFS}{BFS}
+  \SetKwFunction{RemoveEdge}{RemoveEdge}
+  \SetKwFunction{AddEdge}{AddEdge}
+  
+  \BlankLine
+  Select a vertex randomly as the starting vertex\;
+  Construct the BFS tree using \BFS{G, starting vertex}\;
+  
+  \BlankLine
+  \For{each vertex $v$ in the graph}{
+    \If{$v$ is not the starting vertex}{
+      \If{$v$ has an edge with a vertex at the same level in the BFS tree}{
+        Remove the edge between $v$ and its parent in the BFS tree using \RemoveEdge{v, parent($v$)}\;
+        Select a neighbor $n$ of $v$\;
+        Add an edge between $n$ and $v$ using \AddEdge{n, parent($v$)}\;
+      }
+    }
+  }
+\end{algorithm}

@@ -1,0 +1,22 @@
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    [
+        Text/.style={fill=red!10, rounded corners=5pt},
+        Arrow/.style={dashed, <-, thick}
+    ]
+        \graph
+        [spring layout,
+        nodes={draw, thick, circle, minimum size=8mm},
+        node distance=15mm,
+        horizontal=f to a]
+        {
+            a -- { b, c, e -- {f, g, h} };
+            { h, g } -- a;
+        };
+        \draw[Arrow] (c) to[out=0,in=180] +(13:25mm) node [Text] {Vertex};
+        \draw[Arrow] ($ (a)!.5!(b) $) to[out=-45, in=180] ++(8:30mm) node [Text] {Edge};
+    \end{tikzpicture}
+    \caption{A Graph}
+    \label{fig:graphExample}
+\end{figure}

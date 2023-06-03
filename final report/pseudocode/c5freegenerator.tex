@@ -1,0 +1,32 @@
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  \label{alg:c5gen}
+  \Input{Number of vertices $N$, desired density $D$}
+  \Output{Generated C5-free graph $G$}
+  
+  Create an empty graph $G$ with $N$ vertices\;
+  
+  $EdgeCount \leftarrow D \times N \times (N - 1) / 2$\;
+  
+  \While{the number of edges in $G$ is less than $EdgeCount$}{
+    Let $u$ be a random vertex index from $0$ to $N - 1$\;
+    Let $v$ be a random vertex index from $0$ to $N - 1$\;
+    
+    \If{$u$ and $v$ are the same}{
+      continue to the next iteration\;
+    }
+    
+    \If{there is already an edge between $u$ and $v$ in $G$}{
+      continue to the next iteration\;
+    }
+    
+    Add an edge between $u$ and $v$ in $G$\;
+  }
+  
+  \textbf{Output} the generated C5-free graph $G$\;
+  
+  \caption{C5-Free Graph Generation Algorithm}
+\end{algorithm}
+

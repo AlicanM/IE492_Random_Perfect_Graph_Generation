@@ -1,0 +1,55 @@
+\begin{algorithm}[H]
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\caption{Combinatorial Algorithm}
+\label{alg:perfectGen}
+\Input{$n_1$, $n_2$: the sizes of two perfect graphs}
+\Output{A perfect graph $G$}
+\SetAlgoLined
+\SetKwFunction{RandomCombinatorialOperation}{RandomCombinatorialOperation}
+\SetKwFunction{CliqueIdentification}{CliqueIdentification}
+\SetKwFunction{Substitution}{Substitution}
+\SetKwFunction{Composition}{Composition}
+\SetKwFunction{DisjointUnion}{DisjointUnion}
+\SetKwFunction{Join}{Join}
+\SetKwFunction{Complement}{Complement}
+
+\BlankLine
+$\rho \gets$\ \RandomCombinatorialOperation{} \;
+    
+    \BlankLine
+    Let $I$ be the input graph count.\;
+    
+    \eIf{$\rho =$ complement}{
+        $I \gets 1$\;
+    }{
+        $I \gets 2$\;
+    }
+    \BlankLine
+    For each integer $i \leq I$, let $G_{i} = (V_i, E_i)$ be a graph selected randomly from the collection of small-sized perfect graphs $P_i$ such that $|V_i| = n_i$\;
+
+    Let $G = (V,E)$ be the resulting matrix.\;
+    \BlankLine
+    \tcc{Choose the appropriate combinatorial operation.}
+    \BlankLine
+    \uIf{$\rho =$ clique identification}{
+        $G \gets $ \CliqueIdentification{$G_{1}$, $G_{2}$} \;
+    }
+    \uElseIf{$\rho =$ substitution}{
+        $G \gets $ \Substitution{$G_{1}$, $G_{2}$} \;
+    }
+    \uElseIf{$\rho =$ complement}{
+        $G \gets $ \Complement{$G_{1}$, $G_{2}$} \;
+    }
+    \uElseIf{$\rho =$ disjoint union}{
+        $G \gets $ \DisjointUnion{$G_{1}$, $G_{2}$} \;
+    }
+    \uElseIf{$\rho =$ join}{
+        $G \gets $ \Join{$G_{1}$, $G_{2}$} \;
+    }
+    \ElseIf{$\rho =$ complement}{
+        $G \gets $ \Complement{$G_{1}$} \;
+    }
+    \BlankLine
+    \Return{$G = (V,E)$}
+\end{algorithm}

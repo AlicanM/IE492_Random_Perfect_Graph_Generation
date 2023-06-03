@@ -1,0 +1,83 @@
+\begin{figure}[h]
+    \centering
+    \adjustbox{max width=\textwidth}{%
+    \begin{tikzpicture}
+    [every node/.style={align=center},
+    Arrow/.style={->, thick},
+    TextNode/.style={fill=red!10, rounded corners=5pt},
+    Limit/.style={->, thick, densely dotted}]
+
+        %% Nodes %%
+        \node [draw, ellipse] (rpgg) {Random Perfect\\Graph Generator};
+        \node [right = 15mm of rpgg] (rpg) {Random\\Perfect Graph};
+        \node [above left = 1cm and 15mm of rpgg.west, anchor=south] (in1) {Density\\Size};
+        \node [below left = 1cm and 15mm of rpgg.west, anchor=north] (in2) {Graphs};
+        \node [left = 2cm of rpgg, TextNode] (input) {Input};
+        \node [above = 2mm of rpg, TextNode] (output) {Output};
+
+        \coordinate[above = 15mm of rpgg] (up);
+        \node[left = 2cm of up, anchor=south] (time) {Time};
+        \node[right = 2cm of up, anchor=south] (random) {Randomness};
+        \node[above = 5mm of up, anchor=south] (memory) {Memory};
+        \node[above = 2mm of memory, TextNode] (limitation) {Limitations};
+        %% Arrows %%
+        % Input:
+        \draw[Arrow] (in1) to[out=270, in=125] (rpgg.165);
+        \draw[Arrow] (in2) to[out=90, in=-125] (rpgg.195);
+        % Output:
+        \draw[Arrow] (rpgg.east) -- (rpg);
+        % Limitations:
+        \draw[Limit] (time) to[out=270,in=90] (rpgg.120);
+        \draw[Limit] (random) to[out=270,in=90] (rpgg.60);
+        \draw[Limit] (memory) -- (rpgg);
+
+
+        \node[below = 2mm of in2] {
+        \begin{tikzpicture}[
+        anchor=north,
+        red/.style={circle,fill=Red!30},
+        green/.style={circle,fill=Green!30},
+        blue/.style={circle,fill=Blue!30},
+        brown/.style={circle,fill=Brown!30},
+        salmon/.style={circle,fill=Salmon!30},
+        orange/.style={circle,fill=Orange!30},
+        cyan/.style={circle,fill=Cyan!30},
+        magenta/.style={circle,fill=Magenta!30}]
+            \graph[spring layout,
+                nodes={draw, circle, as=, inner sep=2.5pt},
+                node distance=6mm
+            ]
+            {
+                a[red] --
+                {b[green],
+                c[blue] -- {h[brown], i[salmon]}, d[orange] -- {e[cyan], f[magenta]}}
+            };
+        \end{tikzpicture}};
+        
+        \node[below = 2mm of rpg] {
+        \begin{tikzpicture}[
+        anchor=north,
+        red/.style={circle,fill=Red!30},
+        green/.style={circle,fill=Green!30},
+        cyan/.style={circle,fill=Cyan!30},
+        brown/.style={circle,fill=Brown!30},
+        magenta/.style={circle,fill=Magenta!30},
+        orange/.style={circle,fill=Orange!30}]
+            \graph[spring layout,
+                nodes={draw, circle, as=, inner sep=2.5pt},
+                node distance=6mm
+            ]
+            {
+                a[red] -- {
+                b[green],
+                c[cyan],
+                d[brown] -- {e[magenta],f[orange]}
+                } -- f
+            };
+        \end{tikzpicture}};
+        
+    \end{tikzpicture}
+    }%
+    \caption{Context Diagram of the Project}
+    \label{fig:contextDiagram}
+\end{figure}

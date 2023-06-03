@@ -1,0 +1,45 @@
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  
+  \caption{Clean Odd Cycle-free Graph Generation (ER Model)}
+  \label{alg:cleangen}
+  \Input{Number of vertices $n$, edge probability $p$}
+  \Output{Generated clean odd cycle-free graph $g$}
+  
+  \SetKwFunction{CleanCycleCheck}{clean\_cycle\_check}
+  \SetKwProg{Fn}{Function}{:}{}
+  \SetKwRepeat{Do}{do}{while}
+  \SetKwFor{For}{for}{do}{endfor}
+  
+  \Fn{CleanCycleGenerationER($n$, $p$)}{
+    Create an empty graph $g$ with $n$ vertices\;
+    Calculate the number of edges $e$ based on $n$ and $p$\;
+    
+    \Do{the number of edges in $g$ is less than $e$}{
+      Generate a random number of edges $number\_of\_edge$ using a Poisson distribution with mean 0.25\;
+      
+      \For{$i$ in $1$ to $number\_of\_edge$}{
+        Select two random vertices $v1$ and $v2$ from $g$\;
+        Add an edge between $v1$ and $v2$ in $g$\;
+      }
+      
+      Create an empty list $edge\_result$\;
+      
+      \For{$i$ in $1$ to $number\_of\_edge$}{
+        $edge\_result[i] \leftarrow$ \CleanCycleCheck{$g$, $v1$, $v2$}\;
+      }
+      
+      \If{any edge in $edge\_result$ allows a clean cycle}{
+        \For{$i$ in $1$ to $number\_of\_edge$}{
+          Remove the edge between $v1$ and $v2$ from $g$\;
+        }
+      }
+      
+      Simplify $g$ by removing duplicate edges and self-loops\;
+    }
+    
+    \Return $g$\;
+  }
+\end{algorithm}

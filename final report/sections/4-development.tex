@@ -1,0 +1,96 @@
+\section{Development of Alternative Solutions}
+To generate random perfect graphs, we implemented two alternative methods. In the upcoming sections, these two different alternative solutions are discussed.
+
+\subsection{Combinatorial Algorithm}
+
+In this approach, the main idea is to create a random perfect graph by combining smaller perfect graphs using special operators that preserve perfectness. Drawing inspiration from Tınaz Ekim's paper~\cite{tinaz}, this algorithm starts with an initial pool of perfect graphs sourced from McKay's open source database of basic perfect graphs up to 9 vertices.~\cite{mckay} As illustrated in Figure~\ref{fig:combinatorialAlg}, random graphs are selected from this pool, and a random combination operation from the list of available operations is applied. By utilizing specialized perfectness-preserving operations influenced by Ekim's research, the algorithm always constructs larger graphs that are 100\% perfect. Notably, the resulting perfect graphs are then added back to the pool, enriching the collection for subsequent iterations. This iterative process ensures that the algorithm harnesses the combined knowledge and properties of the perfect graphs in the pool, increasing the diversity and quality of the generated random perfect graphs. In Algorithm~\ref{alg:perfectGen} in Appendix~\ref{sec:pseudo}, the combinatorial algorithm is explained step by step.
+
+\input{images/combinatorialAlgorithm/combinatorialAlgorithm}
+
+\subsubsection{Combinatorial Operations}
+
+The combinatorial algorithm uses operations defined in~\cite{tinaz}. In the paper, 6 operations are mentioned:
+
+\begin{description}
+    \item[Clique Identification] \hfill \\
+    Let $G_1$, $G_2$ be disjoint graphs, and $K_i$ be a nonempty clique in $G_i$ such that $|K_1| = |K_2|$. Define a one-to-one mapping between the vertices of $K_1$ and $K_2$. A graph obtained by merging each mapped $v_1$ in $K_1$ with vertex $v_2$ in $K_2$ is said to arise from $G_1$ and $G_2$ by clique identification. A graph $G$ generated via clique identification is \textit{perfect}.
+
+    In Algorithm \PerfectGen\, one vertex from $G$ and one vertex from $G'$ is chosen, and each one is extended to a maximal clique, $K_1$ and $K_2$. Assuming $|K_1| \leq |K_2|$, random $|K_1|$ vertices from $K_2$ are chosen and are identified with those in $K_1$. The one-to-one mapping is randomly determined.
+
+    \input{images/combinatorialAlgorithm/cliqueIdentificationExample}
+    
+    \item[Substitution] \hfill \\
+    Let $G_1$, $G_2$ be disjoint graphs, $v$ be a vertex of $G_1$, and $N$ the set of all neighbors of $v$ in $G_1$. Removing $v$ from $G_1$ and linking each vertex in $G_2$ to those in $N$ results in a graph that arises from $G_1$ and $G_2$ by substitution. If $G_1$ and $G_2$ are perfect, a graph $G$ obtained via substitution of these graphs is also \textit{perfect}. We note that this operation is also known as Replication Lemma in the literature and it played an important role in the proof of the WPGT\footnote{Weak Perfect Graph Theorem}. The combinatorial algorithm randomly picks a vertex $v$ from $G_1$, and then substitutes $v$ with $G_2$ as explained above.
+
+    \input{images/combinatorialAlgorithm/substitutionExample}
+
+    \item[Composition] \hfill \\
+    Let $G_1$, $G_2$ be disjoint graphs each with at least three vertices, $v_i$ be a vertex of $G_i$, $N(v_i)$ the set of all neighbors of $v_i$. The composition of $G_1$ and $G_2$ is obtained from $G_1 \setminus {v_1}$ and $G_2 \setminus {v_2}$ by linking all vertices in $N(v_1)$ to those in $N(v_2)$. A graph obtained from two perfect graphs via composition is \textit{perfect}.
+
+    \input{images/combinatorialAlgorithm/compositionExample}
+    
+    \item[Disjoint Union] \hfill \\
+    Let $G_1$, $G_2$ be two disjoint graphs. The disjoint union of $G_1$ and $G_2$ is simply $G = G_1 \cup G_2$ with $V(G) = V(G_1) \cup V(G_2)$ and $E(G) = E(G_1) \cup E(G_2)$. Disjoint union of perfect graphs is \textit{perfect}.
+
+    \item[Join] \hfill \\
+    Let $G_1$, $G_2$ be disjoint graphs. The join of $G_1$ and $G_2$, is obtained by connecting all nodes in $G_1$ to all those in $G_2$. A graph generated from two perfect graphs via join operation is perfect. As a proof, assume that $G_1$ and $G_2$ are perfect. Consider $\bar{G}$ which is simply $\bar{G_1} \cup \bar{G_2}$. $G_1$ and $G_2$ are perfect, so $\bar{G_1}$ and $\bar{G_2}$ are perfect, too (WPGT). Like disjoint union, $\bar{G} = \bar{G_1} \cup \bar{G_2}$ is \textit{perfect}.
+
+    \item[Complement] \hfill \\
+    By WPGT, the complement of a perfect graph is again \textit{perfect}.
+
+\end{description}
+
+\subsubsection{Strengths and Weaknesses of the Combinatorial Algorithm}
+\paragraph{Strengths:}
+
+\begin{itemize}
+\item \textbf{Efficient Generation:} Combinatorial algorithm allows for the quick creation of random perfect graphs by utilizing perfectness-preserving operations. By bypassing the need for perfectness verification, the algorithm avoids the computationally demanding task, which is known to be NP-complete. This results in significant time savings during the graph generation process.
+\end{itemize}
+\paragraph{Weaknesses:}
+
+\begin{itemize}
+\item \textbf{Limited Scope:} Combinatorial algorithm's pool generation method, which relies on iteratively calling the algorithm and growing the pool, introduces a factor that can impact the probabilities of generating different graphs. The order in which the individual runs occur affects how the pool grows, potentially leading to biases in the generated random graphs. Consequently, the algorithm's pool generation method may limit the diversity and range of perfect graphs that can be generated.
+
+\item \textbf{Incompleteness:} Due to the limited knowledge about all possible perfect graphs, it remains unknown whether \PerfectGen\ can generate all potential perfect graphs. The algorithm's dependence on combining and iterating from the initial pool might result in some perfect graph configurations being unattainable through this approach.
+\end{itemize}
+
+In summary, combinatorial algorithm offers efficient generation of random perfect graphs by utilizing perfectness-preserving operations. It avoids the time-consuming task of perfectness verification while utilizing existing knowledge from a pool of initial perfect graphs. This way, this method is able to generate very large perfect graphs quickly; however, its limitations include a restricted scope based on the initial pool and the uncertainty of generating all possible perfect graphs.
+
+\subsection{Heuristic Repair Algorithm}
+\subsubsection{Methodology Design}
+When designing algorithms, it is often necessary to have a mechanism for exploring the vertices and edges of a graph. By having access to the adjacency sets, we can repeatedly move from a vertex to one of its neighboring vertices, allowing us to navigate through the graph. During this exploration process, some vertices will have already been visited, while others have not. The next vertex to visit, denoted as \textit{x}, must be chosen, and since there may be multiple eligible candidates for \textit{x}, it becomes important to establish a priority among them.
+
+This section discusses two priority criteria that are particularly useful for graph exploration: \textbf{depth-first search (DFS)} and \textbf{breadth-first search (BFS)}. In both methods, each edge is traversed once in both the forward and reverse directions, and every vertex is visited. By examining a graph in such a structured manner, certain algorithms become easier to comprehend and execute more efficiently. The choice between DFS and BFS can significantly impact the algorithm's efficiency, meaning that selecting an appropriate data structure alone is not enough to ensure a well-performing implementation. A carefully chosen search technique is also essential. 
+
+For this reason, in our heuristic repair algorithm, we used BFS technique to explore the starting graph and decide the repair moves in each iteration. The idea is to pick up a starting graph and make some clever and random edge changes to disturb possible odd cycles in this method. Therefore, in this section, we explain the disturbing phase while in the second part, we discuss the starting graph selection. Firstly, we divide this first design into two parts: \textbf{Starting Vertex Approach} and \textbf{Parent Vertex Approach}.
+
+These two approaches, \texttt{Parent Vertex Approach in Heuristic Re\-pair Al\-go\-rithm} and \texttt{Starting Vertex Approach in Heuristic Repair Al\-go\-rithm}, are explained in Algorithm~\ref{alg:parentvertex} and Algorithm~\ref{alg:startingvertex} in Appendix~\ref{sec:pseudo}, respectively.
+
+\input{images/heuristicRepairAlgorithm/startingVertexApproach}
+
+\input{images/heuristicRepairAlgorithm/parentVertexApproach}
+
+\subsubsection{Starting Graph Design}
+
+In the above-mentioned algorithm, a graph is taken as input. This graph can be a random graph with a specific size and density. The first method from the literature to generate random graphs is Erdős - Rényi random graph model ~\cite{erdos}. However, from the literature, we know that almost no ER random graph will be perfect ~\cite{erdos}. Still, we generated some ER random graph and use these graphs as input starting graphs. At the end, we conducted some tests regarding the performance of this method. Even though it will be discussed, the result can be explained shortly that this method does not generate perfect graphs as many as the other approach does. Therefore, we need to select a better starting graph to generate random perfect graphs. From this point, we selected a certain graph class, ${C_5-free}$ graphs, where the smallest component that violates the perfectness is ${C_5}$ (cycle of length 5). The reason of this selection comes from a result from the literature: Almost all ${C_5-free}$ graphs are perfect when the number of vertices goes to infinity ~\cite{promel}. Therefore, this result might result in an improvement in our random perfect graph generation process. We decided to run our edge-modification heuristic repair algorithm by using ${C_5-free}$ graphs as starting graphs to increase the speed of the algorithm by decreasing the number of iterations to generate a perfect graph. This idea is reasonable since the bottleneck of the algorithm is perfectness check and the only way to decrease the time spent in perfectness recognition is to decrease the number of iterations, where in each iteration, perfectness check is conducted. Finding a faster recognition algorithm is beyond the scope of this study. Therefore, we implemented ${C_5-free}$ graph generation and recognition algorithm to generate random ${C_5-free}$ graphs to be used in the heuristic repair algorithm. As in Algorithm~\ref{alg:c5check}, whether a graph is ${C_5-free}$ or not can be recognized; while with the Algorithm~\ref{alg:c5gen}, we can generate ${C_5-free}$ graphs in general. These algorithms can be found in Appendix~\ref{sec:pseudo}.
+
+%Here, we need to put C5-free generation and checker algo
+
+Furthermore, we searched for a way to start with a better starting graphs to generate random perfect graphs. We get a result from the literature, where a new type of graph class section \textit{clean odd cycle-free graphs} helps us get perfect graphs faster. Also, there had been some studies for clean odd-cycle graph generation and checker implementation in Bogazici University. Therefore, it is expected to get some better results; however, there is still some time needed to implement this third phase of the project and this improvement idea could be a next step for the upcoming studies. Still, the idea of recognizing \textit{clean odd cycle-free graphs} is explained with the Algorithm~\ref{alg:cleanrec} and generation algorithm is presented in the Algorithm~\ref{alg:cleangen} in Appendix~\ref{sec:pseudo}.
+
+\subsubsection{Strengths and Weaknesses of the Heuristic Repair Method}
+\paragraph{Strengths:}
+
+\begin{itemize}
+\item \textbf{Potential for Generating All Perfect Graphs:} The Heuristic Repair Method has the potential to generate every perfect graph with a positive probability. By iteratively repairing and modifying initially imperfect graphs, this approach explores different configurations, increasing the chances of generating a wide variety of perfect graphs.
+\item \textbf{Flexibility and Adaptability:} The heuristic nature of the algorithm allows for flexibility in exploring different repair strategies and adapting to the characteristics of each specific graph. This adaptability enhances the algorithm's ability to generate diverse perfect graph instances.
+\end{itemize}
+
+\paragraph{Weaknesses:}
+
+\begin{itemize}
+\item \textbf{Time-Intensive Process:} The Heuristic Repair Method is computationally more demanding and time-consuming compared to the Combinatorial Approach. The iterative nature of the algorithm, involving repairs and modifications, and perfectness check, increases the time required to generate a perfect graph. As a result, the overall efficiency of the algorithm may be compromised.
+\item \textbf{Lack of Formal Proof:} Although the Heuristic Repair Method has the potential to generate every perfect graph, there is no formal proof or counterexample provided to verify this claim. The algorithm's performance in generating specific perfect graph configurations remains dependent on its heuristics and repair strategies.
+\end{itemize}
+
+In summary, the Heuristic Repair Method can generate various perfect graphs by iteratively repairing and modifying imperfect graphs. It is flexible and adaptable, leading to the generation of diverse perfect graph instances. However, it is more time-consuming than the Combinatorial Approach, and its ability to generate all possible perfect graphs is uncertain due to the lack of formal proof.

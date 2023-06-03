@@ -1,0 +1,71 @@
+\begin{figure}[h]
+    \centering
+    \adjustbox{max width=\textwidth}{%
+    \begin{tikzpicture}
+    [Label/.style={rounded corners=5pt, fill=red!10}]
+
+        %% Nodes %%
+        \node (G1_l) {$G_1$};
+        \node[right = 25mm of G1_l] (G2_l) {$G_2$};
+
+        \node[right = 7cm of G2_l] (G_l) {$G$};
+        
+        \node[above = 17mm of G1_l, centered] (G1) {
+        \begin{tikzpicture}[
+        anchor=south,
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30}]
+            \graph[spring layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=8mm
+            ]
+            {
+                a -- {b, c, e, f -- g};
+            };
+        \end{tikzpicture}};
+
+        \node[above = 17mm of G2_l, centered] (G2) {
+        \begin{tikzpicture}[
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30}]
+            \graph[spring layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=8mm,
+            ]
+            {
+                a -- {b, c, d -- {e, f -- {b,c}}};
+                b -- e;
+                
+            };
+        \end{tikzpicture}};
+
+        \node[above = 17mm of G_l, centered] (G) {
+        \begin{tikzpicture}[
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30}]
+            \graph[spring layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=9mm,
+            ]
+            {
+            a -- b -- c -- d -- a;
+            a -- e;
+            b -- f;
+            c -- {g, h, i};
+            d -- {k};
+            };
+        \end{tikzpicture}};
+        
+        \draw[-{Stealth[width=10pt,length=15pt]}, thick, shorten >=5mm, shorten <=5mm, line width=4pt] (G2) -- node[midway,above,align=center] {Combinatorial\\Operation} (G);
+
+        \coordinate (left_mid) at ($ (G1_l)!.5!(G2_l) $);
+        \node [Label, above = 4cm of left_mid] {2 Perfect Graphs};
+        \node [Label, above = 4cm of G_l.mid] {Larger Perfect Graph};
+    \end{tikzpicture}
+    }%
+    \caption{Illustration of Combinatorial Algorithm}
+    \label{fig:combinatorialAlg}
+\end{figure}

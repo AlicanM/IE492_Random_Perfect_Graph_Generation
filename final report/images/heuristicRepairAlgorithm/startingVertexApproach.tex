@@ -1,0 +1,58 @@
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=\textwidth}{%
+    \begin{tikzpicture}
+    [Description/.style={align=center, text width=37mm, anchor=north west, rounded corners=5pt, fill=gray!10, draw, inner sep=3mm}]
+        %% Nodes %%
+        \node[Description] (G1_l) {Generate the \textit{BFS tree} of the current with a randomly selected starting vertex};
+        \node[right = 1cm of G1_l.north east, Description] (G2_l) {For each vertex $v$, check if $v$ has an edge between vertices that shares the same level in BFS tree 
+};
+        \node[right = 1cm of G2_l.north east, Description] (G3_l) {Remove the edge between $v$ and its parent. Then check the shortest path from starting vertex to $v$.};
+        \node[right = 1cm of G3_l.north east, Description] (G4_l) {If the shortest path visits even number of vertices, add an edge between $v$ and starting vertex. O/w, add an edge between $v$’s neighbor and starting vertex. };
+        
+        \node[above = 2cm of G1_l, centered] (G1) {
+        \tikz [tree layout, minimum number of children=2,
+       sibling distance=8mm, level distance=7mm]
+  \graph [nodes={circle, inner sep=0pt, minimum size=2mm, fill, as=}, edges={thick}]{
+    a[fill=Red!80!black] -- { b -- c -- { d -- e, f -- { g, h }}, i -- j -- k[second] }
+  };};
+
+  \node[above = 2cm of G2_l, centered] (G2) {
+        \tikz [tree layout, minimum number of children=2,
+       sibling distance=8mm, level distance=7mm]
+  \graph [nodes={circle, inner sep=0pt, minimum size=2mm, fill, as=}, edges={thick}]{
+    a[fill=Red!80!black] -- { b -- c[fill=RoyalBlue] -- { d -- e, f -- { g, h }}, i -- j -- k[second] };
+    c --[color=Red!80!black] j;
+  };};
+
+  \node[above = 2cm of G3_l, centered] (G3) {
+        \tikz [tree layout, minimum number of children=2,
+       sibling distance=8mm, level distance=7mm, Path/.style={color=RoyalBlue, thick}]
+  \graph [nodes={circle, inner sep=0pt, minimum size=2mm, fill, as=}, edges={thick}]{
+    a[fill=Red!80!black] -- { b --[dashed] c[fill=RoyalBlue] -- { d -- e, f -- { g, h }}};
+    a --[Path] i --[Path] j -- k[second]; 
+    c --[Path] j;
+  };
+  };
+
+    \node[above = 2cm of G4_l, centered] (G4) {
+        \begin{tikzpicture}
+            \coordinate (a);
+            \coordinate (j);
+            \graph [tree layout, minimum number of children=2, sibling distance=8mm, level distance=7mm, nodes={circle, inner sep=0pt, minimum size=2mm, fill, as=}, edges={thick}]{
+                a[fill=Red!80!black] -- { b --[draw=none] c[fill=RoyalBlue] -- { d -- e, f -- { g, h }}, i -- j -- k[second] };
+                c --[color=Red] j;
+            };
+            \draw[thick, color=Green] (a) -- (j);
+        \end{tikzpicture}
+    };
+    
+    \draw[-{Stealth[width=10pt,length=15pt]}, thick, shorten >=7mm, shorten <=7mm, line width=4pt] (G1) -- (G2);
+    \draw[-{Stealth[width=10pt,length=15pt]}, thick, shorten >=7mm, shorten <=7mm, line width=4pt] (G2) -- (G3);
+    \draw[-{Stealth[width=10pt,length=15pt]}, thick, shorten >=7mm, shorten <=7mm, line width=4pt] (G3) -- (G4);
+  
+    \end{tikzpicture}
+    }%
+    \caption{Starting Vertex Approach}
+    \label{fig:startingVertexApproach}
+\end{figure}

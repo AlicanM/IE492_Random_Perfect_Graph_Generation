@@ -1,0 +1,115 @@
+\documentclass[12pt, oneside, a4paper]{article}
+%== Preamble ==%
+\usepackage[dvipsnames]{xcolor}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{csquotes}
+\usepackage[turkish,shorthands=off,english]{babel}
+\usepackage[backend=biber, sorting=nty]{biblatex}
+\usepackage{tikz}
+\usepackage[algo2e]{algorithm2e}
+\usepackage{algorithm}
+\usepackage{tabularx}
+\usepackage{diagbox}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{cellspace}
+\usepackage{multirow}
+\usetikzlibrary{graphs,graphdrawing, calc, positioning, shapes, arrows.meta}
+\usegdlibrary {trees, force, circular}
+
+\bibliography{proposal_references}
+
+% Motivation
+% Algorithmic Graph Theory and Perfect Graphs (Second Edition) - Golumbic, Martin Charles
+
+% Graph Classes, A Survey - Brandstädt Andreas, Le Van Bang, Spinrad Jeremy P.
+
+\newcommand{\PerfectGen}{\texttt{PerfectGen}}
+
+% For sorting the references alphabetically
+\DeclareSortingNamekeyTemplate{
+  \keypart{
+    \namepart{given}
+  }
+  \keypart{
+    \namepart{prefix}
+  }
+  \keypart{
+    \namepart{family}
+  }
+  \keypart{
+    \namepart{suffix}
+  }
+}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=false,
+    pdftitle={IE 492 Final Project Report: Generating Random Perfect Graphs} ,
+    pdfauthor = {Ali Can Milani, Aral Dörtoğul, Fatih Mehmet Yılmaz},
+    bookmarksopen = true,
+    colorlinks = false,
+    pdfpagemode=FullScreen,
+    hidelinks,
+    breaklinks
+    }
+
+\renewcommand{\contentsname}{Table of Contents}
+
+%== Document ==%
+
+\begin{document}
+
+\pagenumbering{roman}
+
+\input{sections/titlepage}
+
+\newpage
+
+\input{sections/abstract}
+
+\newpage
+
+\input{sections/1-introduction}
+
+\newpage
+
+\pagenumbering{arabic}
+
+\input{sections/2-problem_definition}
+
+\newpage
+
+\input{sections/3-analysis}
+
+\newpage
+
+\input{sections/4-development}
+
+\newpage
+
+\input{sections/5-comparison}
+
+\newpage
+
+\input{sections/6-suggestions}
+
+\newpage
+
+\input{sections/7-conclusion}
+
+\newpage
+
+\printbibliography[heading=bibintoc]
+
+\newpage
+
+\appendix
+
+\input{sections/A-pseudocodes}
+
+\end{document}

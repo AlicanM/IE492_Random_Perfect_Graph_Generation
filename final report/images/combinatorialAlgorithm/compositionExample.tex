@@ -1,0 +1,73 @@
+\begin{figure}[h]
+    \centering
+    \adjustbox{max width=\textwidth}{%
+    \begin{tikzpicture}
+
+        %% Nodes %%
+        \node (G1_l) {$G_1$};
+        \node[right = 3cm of G1_l] (G2_l) {$G_2$};
+
+        \node[right = 4cm of G2_l] (G_l) {$G$};
+        
+        \node[above = 15mm of G1_l, centered] (G1) {
+        \begin{tikzpicture}[
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30},
+        subgraph nodes={label=120:$N(v_1)$, dashed, very thin},
+        subgraph text none]
+            \graph[simple necklace layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=10mm
+            ]
+            {
+                a -- b -- c -- d[red, label=right:$v_1$] -- a;
+                N1 [draw]  // { a, c };
+            };
+        \end{tikzpicture}};
+
+        \node[above = 15mm of G2_l, centered] (G2) {
+        \begin{tikzpicture}[
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30},
+        subgraph nodes={label=120:$N(v_2)$, dashed, very thin},
+        subgraph text none]
+            \graph[spring layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=8mm,
+                horizontal=b to d
+            ]
+            {
+                a[red, label=left:$v_2$] -- b -- c -- a;
+                b -- d -- e -- c;
+                N2 [draw]  // { b, c };
+            };
+        \end{tikzpicture}};
+
+        \node[above = 15mm of G_l, centered] (G) {
+        \begin{tikzpicture}[
+        red/.style={circle,fill=Red!30},
+        salmon/.style={circle,fill=Salmon!30},
+        cyan/.style={circle,fill=Cyan!30},
+        subgraph nodes={label=120:$N$, dashed, very thin},
+        subgraph text none]
+            \graph[spring layout,
+                nodes={draw, circle, fill=black, as=, inner sep=2.5pt},
+                node distance=9mm,
+                vertical = g to f,
+            ]
+            {
+            a -- {b,c};
+            d -- e -- f -- g -- d;
+            b -- {d,e};
+            c -- {d,e};
+            };
+        \end{tikzpicture}};
+        
+        \draw[->, thick, shorten >=5mm, shorten <=5mm] (G2) -- (G);
+    \end{tikzpicture}
+    }%
+    \caption{Composition}
+    \label{fig:compositionExample}
+\end{figure}

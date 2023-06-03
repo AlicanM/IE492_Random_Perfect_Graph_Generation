@@ -1,0 +1,70 @@
+\section{Problem Definition, Requirements, and Limitations}
+
+\subsection{The Problem}
+
+Graph theory is a mathematical field concerned with the study of graphs, which are mathematical structures consisting of ``vertices'' or nodes connected by ``edges'' or arcs, as shown in Figure~\ref{fig:graphExample}. Graph theory has numerous applications in various fields such as computer science, engineering, physics, social sciences, and operations research.
+
+\input{images/exampleGraph}
+
+Graphs are used to model many real-world situations, such as social networks, transportation networks, electrical circuits, and communication networks. For example, in social networks, graphs are used to represent people as nodes and relationships between them as edges. In transportation networks, different cities are modeled as edges and the cities themselves as nodes. 
+The practical applications of solving algorithmic problems on special graph classes span across various fields, including VLSI circuit design, scheduling, resource allocation, DNA mapping, artificial intelligence's temporal reasoning, and pavement deterioration analysis. Additionally, perfect graph classes have contributed significantly to the development of profound theoretical findings~\cite{golumbic}. Exploring these graph classes is a starting point for researchers to pursue various fascinating research directions. Therefore, while real-life problems are modeled with graphs, the resulting graphs have certain structural features coming from the nature of the problem.
+
+Many algorithms have been proposed in the literature to solve real-life problems modeled by these graphs. A significant amount of these algorithms perform with exponential time complexity due to the NP-hardness of the problems. However, algorithms designed for specific graph classes (such as \textit{perfect graphs}) can solve these problems much faster by utilizing that graph class' special properties in the algorithm. Therefore, for some graph classes, these problems can be solved faster than the generalized algorithms with a polynomial time complexity.
+
+In order to verify and evaluate the performance of the algorithms for special graph classes, they need to be tested for the whole set of graphs of its specific class. However, examples of graphs belonging to the related graph classes are often not available to measure the performance of these algorithms empirically. Tests can be conducted on graphs that are known to belong to the related graph class, but in some cases it is not known whether these graphs are randomly selected from that graph class and reflect all its diversity. In such cases, tests carried out with those graphs can lead to the incorrect assessment of the algorithms. Therefore, being able to generate random graphs of related classes as unbiased as possible is crucial for testing the algorithms implemented specifically for the related graph class.
+
+In this project, \textbf{random perfect graph generation} is studied, because \textit{perfect graphs} and their sub-classes such as \textit{chordal graphs} and \textit{interval graphs} are at the forefront of the graph classes that stand out with their structural features coming from the applications. Generating random perfect graphs can be a practical solution to test the algorithms that work only for perfect graphs and analyze their performance. In this study different algorithms are designed to generate random perfect graphs and are compared with a detailed analysis.
+
+\subsection{Understanding the Causes of the Problem}
+
+After implementing graph algorithms -that are specialized for perfect graphs- to solve real-life problems, the algorithms must be evaluated by testing them with actual perfect graphs. For this purpose, a set of random perfect graphs that can represent the whole set of perfect graphs needs to be obtained. Since there is neither a comprehensive perfect graph database nor a random perfect graph generator implementation open to public, we need to create our own set of random perfect graphs by implementing our own random perfect generator.
+
+\subsection{The Requirements}
+% Needs and requirements of the system/customer
+
+In the ideal case, the random perfect graph generator that is going to be implemented shall be able to generate all the possible perfect graphs. This means that all the perfect graphs can be generated with a strictly positive probability. Moreover, for the perfect graphs with the same size (number of vertices), the probability of generation should be uniformly distributed, i.e. the generator should be able to generate all perfect graphs of the same size with equal probabilities.
+
+Furthermore, the time required to generate random perfect graphs using the generator should be reasonable.
+
+\subsection{Limitations and Constraints}
+% Limitations and constraints (including important environmental/social/legal/ethical/geopolitical considerations)
+
+Several factors can limit the random perfect graph generation process. These factors include:
+
+\begin{description}
+\item [\textbf{Computational complexity:}] \hfill \\
+The generation of random perfect graphs can be computationally demanding, particularly for large graphs. This limitation arises from the inherent complexity of verifying perfectness, which is a known NP-complete problem, and maintaining other structural properties during the generation process.
+
+\item [\textbf{Bias and randomness:}] \hfill \\
+Ensuring an appropriate balance between randomness and bias in the generated graphs can be difficult. Biased generation algorithms may produce graphs that do not represent the true distribution of random perfect graphs, limiting the applicability and generalizability of the generated graphs.
+
+\item [\textbf{Memory:}] \hfill \\
+Generating and manipulating large graphs may require significant amounts of memory, potentially leading to memory limitations or performance degradation. It is important to consider memory management techniques, data compression methods, or other optimizations to ensure efficient use of available memory resources. 
+\end{description}
+
+Ideally, the generation process should aim to minimize computation time, memory usage and bias, ensuring that time required for generation remains within practical limits and the generated graphs are a fair and representative sample from the space of all possible random perfect graphs.
+
+Other than these, it is worth noting that since the problem is purely mathematical, there is no environmental, social, legal, ethical, or geopolitical constraints affecting this problem.
+
+\newpage
+
+\subsection{Data}
+% Data gathered and used in the identification phase
+
+The generator can be designed to produce a perfect graph from scratch. This approach does not require any data, but one of the possible approaches is generating a graph using other graph(s). Because of this, Brendan McKay's combinatorial data is obtained online~\cite{mckay}, which includes a database of different classes of graphs, including eulerian, chordal, perfect graphs etc.
+
+\subsection{Context Diagram}
+% A context diagram (a systemic view) of the handled design problem
+
+\input{images/contextDiagram}
+
+\subsection{Performance Criteria and Potential Improvements}
+% Performance criteria and potential improvements
+
+The performance criteria for generating random perfect graphs can include factors such as efficiency, accuracy, scalability, and preservation of key graph properties. The random perfect graph generator should
+\begin{itemize}
+    \item maintain reasonable computation times,
+    \item be able to generate all perfect graphs,
+    \item handle large graph sizes,
+    \item unbiased.
+\end{itemize}

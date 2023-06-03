@@ -1,0 +1,123 @@
+\section{Comparison of Alternatives and Recommendations}
+In this section, we discuss different alternatives and their performances in terms of speed, memory and limitations. In order to test the algorithms, the algorithms are implemented in C++, with a graph library called ``\texttt{igraph}''~\cite{igraph}. For those who are interested, the implementations can be found in our GitHub repository~\cite{repository}.
+
+\subsection{Heuristic Algorithm}
+
+\input{tables/c5ErdosComparison}
+
+For the heuristic algorithm, average perfect graph generation time of Erdős–Rényi model and C$_5$-free method are compared in Table~\ref{tab:ER-compared}. Generating initial graph with Erdős–Rényi Model does not generate perfect graphs after 60 vertices with 0.1 density. Generating initial graph with C$_5$-free method is able to generate bigger perfect graphs. The reason is the C$_5$ free graphs are closer to perfect graphs, so the repair algorithm is able to reach a perfect graph, even for larger sizes.
+
+\input{tables/recognitionGenerationComparison}
+
+Next, another important comparison is the time required to generate graphs and verify their perfectness, which is shown in Table~\ref{tab:bottleneck}. The generation time of the initial random graph scales much less compared to the total time for checking the perfectness condition. As can be seen in the table, the recognition algorithm is the \textit{bottleneck} for this method, preventing the algorithm from creating larger graphs.
+
+\input{tables/graphRecognitionTable}
+
+Furthermore, after deciding that graph recognition is the bottleneck of the heuristic approach, different perfect graph recognition algorithms are tested to find the algorithm that performs the fastest on the average. When implementing the algorithms, we have encountered 2 different recognition algorithms:
+\begin{itemize}
+    \item \texttt{isPerfect} from \texttt{igraph} library
+    \item Oylum Şeker's algorithm focuses on finding odd holes, works fast on imperfect graphs but slow on perfect graphs.
+\end{itemize}
+Table~\ref{tab:recognition} compares these 2 recognition algorithms. According to the table, \texttt{igraph}'s \texttt{IsPerfect} method performs faster when given a perfect graph. So, we run and test our implementations with \texttt{IsPerfect} method.
+
+\subsection{Combinatorial Algorithm}
+
+The combinatorial algorithm is run thousands of times to create a large pool of perfect graphs. First, the graph sizes $n_1$ and $n_2$ are chosen 5. With the chosen input, 200 graphs are created. Then $n_1$ and $n_2$ are increased with the following rule:
+
+\begin{quote}
+If $n_1$ and $n_2$ are equal, increment $n_1$ by 1 and set $n_2$ as 5. Otherwise, increment $n_2$ by 1.
+\end{quote}
+
+With this rule, the algorithm is run in a loop with the following sequence of input pairs $n_1$-$n_2$:5-5, 6-5, 6-6, 7-5, 7-6, 7-7\hspace{1em}$\cdots$\hspace{1em} until 55-55; and with each pair, 200 random perfect graphs are generated.
+
+In total, 241,486 perfect graphs of various sizes are generated. The distribution of these graphs are as follows:
+
+\begin{itemize}
+    \item 134,027 disconnected graphs
+    \item 107,459 connected graphs
+    \item 17 acyclic graph
+    \item 44 bipartite graphs
+    \item 907 chordal graphs
+\end{itemize}
+
+It is worth noting that the acyclic and bipartite graphs have small sizes (< 25), they are not encountered when the size increases. This is because these graph classes are very special and the random selection of the combinatorial operation decreases the probability of generating them when the size increases. Chordal graphs are generated more frequently with this algorithm, but their sizes are also small. Almost half of the graphs are connected, which tells us that with this approach, it is equally likely to generate a connected or disconnected graph. Calculating the bias of this algorithm requires extensive analysis, but we are content with the fact that there is no extreme accumulation towards a specific graph class.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/timePerSize}
+    \caption{Combinatorial Algortihm's Mean Graph Generation Time per Graph Size}
+    \label{fig:comb-alg-timePerSize}
+\end{figure}
+
+As it can be seen in Figure~\ref{fig:comb-alg-timePerSize}, there is a nonlinear behaviour in large degrees as the graph size increases, mean generation time increases in such shape. Even if it is not linear, still, the time required to generate a perfect graph using combinatorial algorithm is still much smaller than the heuristic repair generation algorithm. On average, it does not even take 0.04 seconds to create a perfect graph of size 100 with this algorithm. On the contrary, the heuristic requires almost a minute to create a perfect graph with 100 vertives. This is an expected result of the combinatorial algorithm; as mentioned in the previous section, the main advantage of the combinatorial algorithm is that it skips the time consuming perfectness check.
+
+Next, the distribution of clique numbers considering different parameters such as graph size and graph density are investigated.  Firstly, we studied the graphs of \textit{size of 50} with different \textit{graph density} values such as ${0.2}$, ${0.5}$ and ${0.8}$. The distribution of these graphs looks reasonable when taking the shape of the distribution plot into account. 
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_50_2}
+    \caption{Distribution of Clique Numbers of Graphs of Size 50 and Density 0.2}
+    \label{fig:comb-alg-clique-50-2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_50_5}
+    \caption{Distribution of Clique Numbers of Graphs of Size 50 and Density 0.5}
+    \label{fig:comb-alg-clique-50-5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_50_8}
+    \caption{Distribution of Clique Numbers of Graphs of Size 50 and Density 0.8}
+    \label{fig:comb-alg-clique-50-8}
+\end{figure}
+
+Then, this form continues for the graphs of size 70. However, as the size of the graph increases, the clique number distribution shifts towards larger values. 
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_70_2}
+    \caption{Distribution of Clique Numbers of Graphs of Size 70 and Density 0.2}
+    \label{fig:comb-alg-clique-70-2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_70_5}
+    \caption{Distribution of Clique Numbers of Graphs of Size 50 and Density 0.5}
+    \label{fig:comb-alg-clique-70-5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_70_8}
+    \caption{Distribution of Clique Numbers of Graphs of Size 50 and Density 0.8}
+    \label{fig:comb-alg-clique-70-8}
+\end{figure}
+
+In the end, when we considered random perfect graphs of size 100, the behaviour changes and the distribution of the clique numbers of these perfect graphs starts to differ in a wider range. Therefore, as the number of vertices in the graph increases, the random behaviour starts to take place as expected. In the upcoming figures ~\ref{fig:comb-alg-clique-100-2}, ~\ref{fig:comb-alg-clique-100-5} and ~\ref{fig:comb-alg-clique-100-8}, this randomness can be observed.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_100_2}
+    \caption{Clique Numbers of Graphs of Size 100, Density 0.2}
+    \label{fig:comb-alg-clique-100-2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_100_5}
+    \caption{of Clique Numbers of Graphs of Size 100, Density 0.5}
+    \label{fig:comb-alg-clique-100-5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{plots/cliqueNumber_100_8}
+    \caption{Clique Numbers of Graphs of Size 100, Density 0.8}
+    \label{fig:comb-alg-clique-100-8}
+\end{figure}
+
+In summary, considering the bar plots of clique numbers, which is the size of the largest clique that can be made up of edges and vertices of ${G}$, we gathered data for different graphs having different size and density values. We find out that the combinatorial algorithm can generate in different values of size, density and clique number. This shows that even if we expected a limitation of this algorithm by a limited number of operations intuitively without a formal proof, we get decent perfect graphs using the algorithm. Also, with this behaviour, this algorithm does not guarantee to generate every perfect graph with a positive probability, still, practically, it seems to be useful to test and evaluate the algorithms. When considering that the combinatorial algorithm is faster than the heuristic random graph repair generation algorithm, this approach can be applicable for many problems.  

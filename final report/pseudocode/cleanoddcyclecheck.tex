@@ -1,0 +1,31 @@
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  \label{alg:cleanrec}
+  \caption{Clean Odd Cycle-free Graph Recognition}
+  
+  \Input{Graph $g$, vertices $v1$ and $v2$}
+  \Output{Whether the graph $g$ is clean odd cycle-free or not}
+  
+  \SetKwFunction{CleanCycleCheck}{clean\_cycle\_check}
+  \SetKwProg{Fn}{Function}{:}{}
+  
+  \Fn{\CleanCycleCheck{$g$, $v1$, $v2$}}{
+    Create a list $vlist$ containing all vertices in $g$ except $v1$ and $v2$\;
+    
+    \ForEach{vertex $v3$ in $vlist$}{
+      Calculate the shortest paths $p13$ from $v1$ to $v3$ and $p23$ from $v2$ to $v3$\;
+      
+      \If{the union of $p13$ and $p23$ contains at least 5 distinct vertices and has an odd length}{
+        Create a subgraph $indg$ of $g$ with the vertices in the union of $p13$ and $p23$\;
+        
+        \If{all vertices in $indg$ have degree 2}{
+          \Return \textbf{true} (Graph $g$ is clean odd cycle-free)\;
+        }
+      }
+    }
+    
+    \Return \textbf{false} (Graph $g$ is not clean odd cycle-free)\;
+  }
+\end{algorithm}

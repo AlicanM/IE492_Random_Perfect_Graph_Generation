@@ -1,0 +1,62 @@
+\section{Analysis for Solution \& Design Methodology}
+
+\subsection{Literature Review}
+
+\subsubsection{Perfect Graphs}
+
+Perfect graphs are a class of graphs that possess a remarkable property called perfectness. A graph is considered perfect if the chromatic number of every induced subgraph is equal to the size of the largest clique in that subgraph. In simpler terms, a perfect graph has the property that the minimum number of colors required to color its vertices (chromatic number) is equal to the size of the largest complete subgraph (clique) within it.
+
+Perfect graphs have several important properties and characterizations. They are free of certain common subgraphs, such as odd cycles of length at least 5 and their complements (known as Berge graphs). Additionally, perfect graphs can be characterized by Chudnovsky et al.'s strong perfect graph theorem~\cite{spgt}, which states that a graph is perfect if and only if neither the graph nor its complement contains an odd cycle of length at least 5 as an induced subgraph. Therefore, determining whether a graph is perfect can be done by identifying the presence of an odd hole, which can be found either in the graph itself or in its complement. In other words, recognizing the perfectness of a graph is equivalent to identifying whether there exists an odd hole in the graph or its complement.
+
+In 1963, Claude Berge coined the term perfect graph, and he conjectured both the perfect graph theorem and the strong perfect graph theorem~\cite{berge}. 
+
+\subsubsection{Random Perfect Graph Generation}
+
+Creating random graphs in general is a starting point in the domain. The Erdős-Rényi model is a method for creating random graphs given the density (ratio of the number of edges in a graph to the total number of possible edges in that graph) and number of vertices of a graph~\cite{erdos}. This model selects an edge at random and adds it to the graph with a certain probability. The goal of generating a random graph is to ensure that every graph has a non-zero probability of being generated, and that the probability distribution ideally is uniformly distributed for all possible graphs.
+ 
+Some recognition algorithms for perfect graph class are proposed in the literature. Chudnovsky et. al. proposed a recognition time algorithm for detecting perfect graphs that has a polynomial time complexity~\cite{berge-graph}. However, this algorithm fails to give the difference between an odd hole and an odd anti-hole. This results in the fact that with this algorithm, whether a graph is perfect or not can be decided but the reason behind this result cannot be understood.
+
+In a paper by Chudnovsky, Seymour, and Vuskovic~\cite{odd-hole}, a polynomial-time algorithm for detecting odd holes in graphs is described. This result is significant since in this paper, the reason behind the perfectness or not-perfectness can be explained. This algorithm can differentiate between an odd hole and the complement of the odd hole.
+
+In another paper by Oylum Şeker, Tınaz Ekim, and Z. Caner Taşkın~\cite{tinaz}, a perfect graph generation algorithm called \PerfectGen\ is proposed using some available perfect graphs, which is enumerated up to 11 vertices by Brendan McKay~\cite{mckay} and perfection-preserving operations. The authors created perfect graphs with many vertices using operations that preserve perfection. Their approach involved combining small, already known perfect graphs using one of six specific operations that maintain perfection, resulting in a larger perfect graph. They repeated this process until the desired number of vertices was reached. However, this approach does not guarantee that every perfect graph can be generated uniformly at random.
+
+\subsection{Alternative Approaches}
+
+The perfect graph theory field attracts many researchers and is a highly studied branch of graph theory. Specifically, mathematical theoretical results and structures, and recognition, generation, and coloring algorithms are developed by utilizing the intersection of various graph classes to generate random perfect graphs.
+
+In this project, we consider different alternatives for generating random perfect graphs and evaluating algorithm performance. The two main alternatives explored are the Heuristic Repair Method and the Combinatorial Approach.
+
+The Heuristic Repair Method involves using iterative steps to generate random perfect graphs. It iteratively \textit{repairs} imperfect graphs until a perfect graph is obtained. While this method has the potential to generate every perfect graph with a positive probability, it takes more time due to the iterative nature of the algorithm.
+
+On the other hand,  the Combinatorial Approach uses mathematical properties and known structures of perfect graphs to construct new instances. It is generally faster than the heuristic repair method but cannot guarantee a positive probability of generating every perfect graph, limited by a number of mathematical operations.
+
+By studying these different options, our aim is to evaluate the effectiveness of each approach. This analysis will help researchers to choose the most appropriate method for testing their algorithms and evaluating their performance in the world of perfect graph theory.
+
+
+\subsection{Assumptions}
+
+We make some assumptions for this study of random perfect graph generation to be made: 
+
+\begin{enumerate}
+
+\item It is assumed that the algorithms devised for the generation of random perfect graphs have been implemented accurately and are operating as intended.
+\item The properties and characteristics of perfect graphs are well-defined and comprehensively understood within the context of the research.
+\item The comparison between the Heuristic Repair Method and the Combinatorial Approach is based on relevant metrics that effectively capture their respective performance.
+\item The heuristic repair approach is assumed to have a positive probability of generating every perfect graph, without specifying the exact probability value and giving proper formal proof.
+\item The combinatorial algorithm is assumed to not guarantee a positive probability of generating every perfect graph, although no formal proof or counterexample has been provided.
+\item This study's findings are assumed to be applicable for guiding researchers in selecting suitable methodologies to advance the field of perfect graph theory based on their specific requirements.
+
+\end{enumerate}
+
+\newpage
+
+\subsection{Brief Overview of the Selected Approaches}
+We decided to implement two different approach that generate random perfect graphs. 
+
+First one is the combinatorial  algorithm, which generates perfect graphs by combining smaller perfect graphs using some special operators that preserve perfectness. Main advantage of this algorithm is it does not require a check for the perfectness condition which is a NP-hard problem.
+
+Second algorithm is the heuristic repair algorithm, which generates perfect graphs by trying to repairing non-perfect graphs to perfect ones. This repair is done by some edge modifications that tries to eliminate possible odd cycles. This approach can generate every realization of perfect graphs with a positive probability but it requires a check for the perfectness condition which is a NP-hard problem.
+
+\subsection{IE Skills/Tools to be Integrated}
+
+In this project, we worked in the field of graph theory. Therefore, a strong understanding of graph theory is crucial for working with perfect graphs and their sub-classes. Knowledge of graph properties, algorithms, and graph representation methods would be essential. By using definitions, proofs and structural results from the graph theory world, we defined our project aim and implemented our algorithms in C++ programming language. So, programming knowledge is also necessary to implement and test the algorithms. Furthermore, we needed to use data analysis and visualization tools to analyze and interpret the generated graph data. This enables the evaluation and comparison of different algorithms. Therefore, this study is a senior project that involves designing and comparing algorithms for graph generation, which is aligned with algorithm development and analysis. 

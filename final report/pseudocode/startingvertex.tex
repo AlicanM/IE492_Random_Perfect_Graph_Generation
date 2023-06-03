@@ -1,0 +1,32 @@
+\begin{algorithm}[H]
+  \SetKwInOut{Input}{Input}
+  \SetKwInOut{Output}{Output}
+  \caption{Starting Vertex Approach in Heuristic Repair Algorithm}
+  \label{alg:startingvertex}
+  \Input{Starting Graph $G$}
+  \Output{Edge-Modified Graph}
+  \SetAlgoLined
+  \SetKwFunction{BFS}{BFS}
+  \SetKwFunction{ShortestPath}{ShortestPath}
+  \SetKwFunction{AddEdge}{AddEdge}
+  
+  \BlankLine
+  Select a vertex randomly as the starting vertex\;
+  Construct the BFS tree using \BFS{G, starting vertex}\;
+  
+  \BlankLine
+  \For{each vertex $v$ in the graph}{
+    Identify whether $v$ has an edge with a vertex at the same level in the BFS tree\;
+    \If{an edge exists}{
+      Remove the edge between $v$ and its parent in the BFS tree\;
+    }
+    Determine the shortest path from the starting vertex to $v$ using \ShortestPath{G, starting vertex, $v$}\;
+    \If{the shortest path traverses an even number of vertices}{
+      \AddEdge{G, $v$, starting vertex}\;
+    }
+    \ElseIf{the shortest path traverses an odd number of vertices}{
+      Select one of $v$'s neighbors from the vertices on the shortest path as $u$\;
+      \AddEdge{G, $u$, starting vertex}\;
+    }
+  }
+\end{algorithm}
